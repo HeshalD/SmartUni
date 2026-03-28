@@ -43,3 +43,8 @@ Group project for IT3030 Programming Applications and Frameworks.
 | Member 2 | Booking Management | TBD |
 | Member 3 | Incident Ticketing | TBD |
 | Member 4 | Notifications + OAuth | TBD |
+
+### Environment Variables
+1. Inside `smart-uni-api/`, create a `.env` file based on `.env.example`
+2. Fill in your MongoDB Atlas URI
+3. Never commit the `.env` file
