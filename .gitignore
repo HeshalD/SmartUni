@@ -1,0 +1,18 @@
+# Java / Maven
+smart-uni-api/target/
+*.class
+*.jar
+
+# React / Node
+smart-uni-client/node_modules/
+smart-uni-client/dist/
+
+# IDE
+.vscode/
+.idea/
+*.iml
+
+# Environment
+.env
+.env.local
+application-local.properties
