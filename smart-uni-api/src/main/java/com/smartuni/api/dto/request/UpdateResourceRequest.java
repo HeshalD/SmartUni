@@ -1,5 +1,7 @@
 package com.smartuni.api.dto.request;
 
+import com.smartuni.api.model.resource.AvailabilityWindow;
+import com.smartuni.api.model.resource.ResourceStatus;
 import jakarta.validation.constraints.Min;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -23,6 +25,8 @@ public class UpdateResourceRequest {
     private Integer capacity;
 
     private Boolean available;
+    private ResourceStatus status;
+    private List<AvailabilityWindow> availabilityWindows;
     private List<String> amenities;
     private String imageUrl;
     private String contactPerson;

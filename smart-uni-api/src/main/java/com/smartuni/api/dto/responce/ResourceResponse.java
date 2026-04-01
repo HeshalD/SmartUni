@@ -1,5 +1,7 @@
 package com.smartuni.api.dto.responce;
 
+import com.smartuni.api.model.resource.AvailabilityWindow;
+import com.smartuni.api.model.resource.ResourceStatus;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -21,6 +23,8 @@ public class ResourceResponse {
     private String description;
     private Integer capacity;
     private Boolean available;
+    private ResourceStatus status;
+    private List<AvailabilityWindow> availabilityWindows;
     private List<String> amenities;
     private String imageUrl;
     private String contactPerson;

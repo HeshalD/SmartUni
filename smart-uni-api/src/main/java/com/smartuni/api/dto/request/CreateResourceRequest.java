@@ -1,5 +1,7 @@
 package com.smartuni.api.dto.request;
 
+import com.smartuni.api.model.resource.AvailabilityWindow;
+import com.smartuni.api.model.resource.ResourceStatus;
 import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
@@ -34,6 +36,8 @@ public class CreateResourceRequest {
     @NotNull(message = "Availability is required")
     private Boolean available;
 
+    private ResourceStatus status;
+    private List<AvailabilityWindow> availabilityWindows;
     private List<String> amenities;
     private String imageUrl;
     private String contactPerson;
