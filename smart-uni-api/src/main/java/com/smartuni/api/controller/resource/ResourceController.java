@@ -3,6 +3,7 @@ package com.smartuni.api.controller.resource;
 import com.smartuni.api.dto.request.CreateResourceRequest;
 import com.smartuni.api.dto.request.UpdateResourceRequest;
 import com.smartuni.api.dto.responce.ResourceResponse;
+import com.smartuni.api.model.resource.ResourceStatus;
 import com.smartuni.api.service.resource.ResourceService;
 import jakarta.validation.Valid;
 import org.springframework.http.HttpStatus;
@@ -24,9 +25,12 @@ public class ResourceController {
     @GetMapping
     public ResponseEntity<List<ResourceResponse>> getResources(
         @RequestParam(required = false) String category,
-        @RequestParam(required = false) Boolean available
+        @RequestParam(required = false) Boolean available,
+        @RequestParam(required = false) ResourceStatus status,
+        @RequestParam(required = false) Integer minCapacity,
+        @RequestParam(required = false) String location
     ) {
-        return ResponseEntity.ok(resourceService.getResources(category, available));
+        return ResponseEntity.ok(resourceService.getResources(category, available, status, minCapacity, location));
     }
 
     @GetMapping("/{id}")
@@ -36,8 +40,7 @@ public class ResourceController {
 
     @PostMapping
     public ResponseEntity<ResourceResponse> createResource(@Valid @RequestBody CreateResourceRequest request) {
-        ResourceResponse createdResource = resourceService.createResource(request);
-        return ResponseEntity.status(HttpStatus.CREATED).body(createdResource);
+        return ResponseEntity.status(HttpStatus.CREATED).body(resourceService.createResource(request));
     }
 
     @PutMapping("/{id}")
