@@ -26,6 +26,11 @@ public class Resource {
     private String description;
     private Integer capacity;
     private Boolean available;
+
+    @Builder.Default
+    private ResourceStatus status = ResourceStatus.ACTIVE;
+
+    private List<AvailabilityWindow> availabilityWindows;
     private List<String> amenities;
     private String imageUrl;
     private String contactPerson;
