@@ -1,11 +1,22 @@
 import { useState, useRef, useEffect } from 'react';
-import { Link, useNavigate } from 'react-router-dom';
+import { Link, useLocation, useNavigate } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
 import NotificationPanel from './NotificationPanel';
 
+const PAGE_TITLES = {
+  '/dashboard': 'Dashboard',
+  '/resources': 'Resources',
+  '/bookings': 'Bookings',
+  '/tickets': 'Tickets',
+  '/notifications': 'Notifications',
+  '/profile': 'Profile',
+  '/admin': 'Admin Panel',
+};
+
 export default function Navbar() {
-  const { user, logout, isAdmin, isTechnician } = useAuth();
+  const { user, logout } = useAuth();
   const navigate = useNavigate();
+  const location = useLocation();
   const [menuOpen, setMenuOpen] = useState(false);
   const menuRef = useRef(null);
 
@@ -28,81 +39,69 @@ export default function Navbar() {
     ? user.name.split(' ').map((w) => w[0]).join('').toUpperCase().slice(0, 2)
     : '?';
 
+  const pageTitle = PAGE_TITLES[location.pathname] || 'SmartUni';
+
   return (
-    <nav className="navbar">
-      <div className="navbar__inner">
-        {/* Brand */}
-        <Link to="/dashboard" className="navbar__brand">
-          SmartUni
-        </Link>
+    <header className="topbar">
+      <div>
+        <h1 className="topbar__title">{pageTitle}</h1>
+        <p className="topbar__subtitle">Welcome back, {user?.name}</p>
+      </div>
 
-        {/* Nav links */}
-        <div className="navbar__links">
-          <Link to="/resources"     className="navbar__link">Resources</Link>
-          <Link to="/bookings"      className="navbar__link">Bookings</Link>
-          <Link to="/tickets"       className="navbar__link">Tickets</Link>
-          {isAdmin && (
-            <Link to="/admin" className="navbar__link navbar__link--admin">Admin</Link>
-            )}
-          {isTechnician && !isAdmin && (
-            <Link to="/tickets" className="navbar__link navbar__link--tech">My tickets</Link>
-          )}
-        </div>
+      <div className="topbar__right">
+        <NotificationPanel />
 
-        {/* Right side */}
-        <div className="navbar__right">
-          <NotificationPanel />
-
-          {/* User avatar / dropdown */}
-          <div className="user-menu" ref={menuRef}>
-            <button
-              className="user-menu__trigger"
-              onClick={() => setMenuOpen((o) => !o)}
-              aria-label="User menu"
-            >
-              {user?.profilePictureUrl ? (
-                <img
-                  src={user.profilePictureUrl}
-                  alt={user.name}
-                  className="user-menu__avatar"
-                />
-              ) : (
-                <div className="user-menu__avatar user-menu__avatar--initials">
-                  {initials}
-                </div>
-              )}
-            </button>
-
-            {menuOpen && (
-              <div className="user-menu__dropdown">
-                <div className="user-menu__info">
-                  <span className="user-menu__name">{user?.name}</span>
-                  <span className="user-menu__email">{user?.email}</span>
-                </div>
-                <hr className="user-menu__divider" />
-                <Link
-                  to="/profile"
-                  className="user-menu__item"
-                  onClick={() => setMenuOpen(false)}
-                >
-                  My profile
-                </Link>
-                <Link
-                  to="/notifications"
-                  className="user-menu__item"
-                  onClick={() => setMenuOpen(false)}
-                >
-                  Notifications
-                </Link>
-                <hr className="user-menu__divider" />
-                <button className="user-menu__item user-menu__item--danger" onClick={handleLogout}>
-                  Sign out
-                </button>
+        <div className="user-menu" ref={menuRef}>
+          <button
+            className="user-menu__trigger"
+            onClick={() => setMenuOpen((o) => !o)}
+            aria-label="User menu"
+          >
+            {user?.profilePictureUrl ? (
+              <img
+                src={user.profilePictureUrl}
+                alt={user.name}
+                className="user-menu__avatar"
+              />
+            ) : (
+              <div className="user-menu__avatar user-menu__avatar--initials">
+                {initials}
               </div>
             )}
-          </div>
+          </button>
+
+          {menuOpen && (
+            <div className="user-menu__dropdown">
+              <div className="user-menu__info">
+                <span className="user-menu__name">{user?.name}</span>
+                <span className="user-menu__email">{user?.email}</span>
+              </div>
+              <hr className="user-menu__divider" />
+              <Link
+                to="/profile"
+                className="user-menu__item"
+                onClick={() => setMenuOpen(false)}
+              >
+                My profile
+              </Link>
+              <Link
+                to="/notifications"
+                className="user-menu__item"
+                onClick={() => setMenuOpen(false)}
+              >
+                Notifications
+              </Link>
+              <hr className="user-menu__divider" />
+              <button
+                className="user-menu__item user-menu__item--danger"
+                onClick={handleLogout}
+              >
+                Sign out
+              </button>
+            </div>
+          )}
         </div>
       </div>
-    </nav>
+    </header>
   );
 }

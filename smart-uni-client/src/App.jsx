@@ -2,6 +2,9 @@ import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom';
 import { AuthProvider } from './context/AuthContext';
 import { PrivateRoute, AdminRoute } from './components/PrivateRoute';
 import AppLayout from './components/AppLayout';
+import AdminPage from './pages/admin/AdminPage';
+import { NotificationProvider } from './context/NotificationContext';
+import './App.css';
 
 // Auth pages
 import LoginPage          from './pages/auth/LoginPage';
@@ -28,6 +31,14 @@ function PlaceholderPage({ name }) {
   );
 }
 
+function ProtectedAppLayout() {
+  return (
+    <NotificationProvider>
+      <AppLayout />
+    </NotificationProvider>
+  );
+}
+
 export default function App() {
   return (
     <BrowserRouter>
@@ -40,7 +51,7 @@ export default function App() {
 
           {/* Authenticated routes – wrapped in layout with Navbar */}
           <Route element={<PrivateRoute />}>
-            <Route element={<AppLayout />}>
+            <Route element={<ProtectedAppLayout />}>
               <Route path="/dashboard"     element={<DashboardPage />} />
               <Route path="/notifications" element={<NotificationsPage />} />
               <Route path="/profile"       element={<ProfilePage />} />
@@ -52,7 +63,7 @@ export default function App() {
 
               {/* Admin-only routes */}
               <Route element={<AdminRoute />}>
-                <Route path="/admin" element={<PlaceholderPage name="Admin Panel" />} />
+                <Route path="/admin" element={<AdminPage />} />
               </Route>
             </Route>
           </Route>

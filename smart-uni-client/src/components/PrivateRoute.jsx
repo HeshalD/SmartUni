@@ -3,26 +3,22 @@ import { useAuth } from '../context/AuthContext';
 
 /** Requires authenticated user. Redirects to /login otherwise. */
 export function PrivateRoute() {
-  const { isAuthenticated, loading } = useAuth();
-  const location = useLocation();
+  const { loading, isAuthenticated } = useAuth();
 
-  if (loading) return <div className="loading-spinner">Loading…</div>;
+  if (loading) return <div className="loading-spinner">Loading...</div>;
 
-  return isAuthenticated
-    ? <Outlet />
-    : <Navigate to="/login" state={{ from: location }} replace />;
+  return isAuthenticated ? <Outlet /> : <Navigate to="/login" replace />;
 }
 
 /** Requires ADMIN role. Redirects to /dashboard for non-admins. */
 export function AdminRoute() {
-  const { isAuthenticated, isAdmin, loading } = useAuth();
-  const location = useLocation();
+  const { loading, isAuthenticated, isAdmin } = useAuth();
 
-  if (loading) return <div className="loading-spinner">Loading…</div>;
-  if (!isAuthenticated) return <Navigate to="/login" state={{ from: location }} replace />;
-  if (!isAdmin) return <Navigate to="/dashboard" replace />;
+  if (loading) return <div className="loading-spinner">Loading...</div>;
 
-  return <Outlet />;
+  if (!isAuthenticated) return <Navigate to="/login" replace />;
+
+  return isAdmin ? <Outlet /> : <Navigate to="/dashboard" replace />;
 }
 
 /** Requires TECHNICIAN or ADMIN role. */
