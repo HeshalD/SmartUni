@@ -3,6 +3,7 @@ package com.smartuni.api.controller.booking;
 import com.smartuni.api.dto.request.BookingRequest;
 import com.smartuni.api.dto.request.BookingStatusRequest;
 import com.smartuni.api.model.booking.Booking;
+import com.smartuni.api.model.booking.BookingStatus;
 import com.smartuni.api.service.booking.BookingService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
@@ -39,8 +40,10 @@ public class BookingController {
 
     // GET /api/bookings - Get all bookings (admin)
     @GetMapping
-    public ResponseEntity<List<Booking>> getAllBookings() {
-        List<Booking> bookings = bookingService.getAllBookings();
+    public ResponseEntity<List<Booking>> getAllBookings(
+        @RequestParam(required = false) BookingStatus status,
+        @RequestParam(required = false) String resourceId) {
+        List<Booking> bookings = bookingService.getAllBookings(status, resourceId);
         return ResponseEntity.ok(bookings);
     }
 

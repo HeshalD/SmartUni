@@ -27,6 +27,16 @@ public interface BookingRepository extends MongoRepository<Booking, String> {
         LocalDateTime endTime,
         LocalDateTime startTime
     );
+    // Filter by status
+    List<Booking> findByStatus(BookingStatus status);
+
+    // Filter by resource
+    List<Booking> findByResourceId(String resourceId);
+
+    // Filter by status and resource combined
+    List<Booking> findByStatusAndResourceId(BookingStatus status, String resourceId);
+
+    
 }
     
 
