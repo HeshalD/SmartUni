@@ -1,8 +1,11 @@
 package com.smartuni.api.repository.auth;
 
+import com.smartuni.api.model.auth.AuthProvider;
+import com.smartuni.api.model.auth.Role;
 import com.smartuni.api.model.auth.User;
 import org.springframework.data.mongodb.repository.MongoRepository;
 
+import java.util.List;
 import java.util.Optional;
 
 public interface UserRepository extends MongoRepository<User, String> {
@@ -11,6 +14,7 @@ public interface UserRepository extends MongoRepository<User, String> {
 
     boolean existsByEmail(String email);
 
-    Optional<User> findByProviderIdAndProvider(String providerId,
-            com.smartuni.api.model.auth.AuthProvider provider);
+    Optional<User> findByProviderIdAndProvider(String providerId, AuthProvider provider);
+
+    List<User> findByRolesContaining(Role role);
 }

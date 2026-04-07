@@ -83,17 +83,31 @@ public class AuthService {
 
     public UserProfileResponse assignRole(String userId, Role role) {
         User user = findById(userId);
-        user.getRoles().add(role);
+
+        Set<Role> updatedRoles = new java.util.HashSet<>(user.getRoles());
+        updatedRoles.add(role);
+        user.setRoles(updatedRoles);
+
         userRepository.save(user);
         return toProfileResponse(user);
     }
 
     public UserProfileResponse removeRole(String userId, Role role) {
         User user = findById(userId);
-        if (user.getRoles().size() <= 1) {
+
+        Set<Role> updatedRoles = new java.util.HashSet<>(user.getRoles());
+
+        if (updatedRoles.size() <= 1) {
             throw new BadRequestException("User must retain at least one role");
         }
-        user.getRoles().remove(role);
+
+        updatedRoles.remove(role);
+
+        if (updatedRoles.isEmpty()) {
+            throw new BadRequestException("User must retain at least one role");
+        }
+
+        user.setRoles(updatedRoles);
         userRepository.save(user);
         return toProfileResponse(user);
     }
