@@ -1,4 +1,0 @@
-com\smartuni\api\SmartUniApiApplication.class
-com\smartuni\api\exception\GlobalExceptionHandler.class
-com\smartuni\api\controller\HealthController.class
-com\smartuni\api\config\SecurityConfig.class
