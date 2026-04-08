@@ -570,7 +570,12 @@ body {
   border-radius: 50%;
   animation: spin 0.7s linear infinite;
 }
-@keyframes spin { to { transform: rotate(360deg); } }
+
+@keyframes spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
 
 .loading-spinner {
   display: flex;
@@ -584,6 +589,8 @@ body {
 h1,
 h2,
 h3,
+
 p {
   margin: 0;
+}
 }
