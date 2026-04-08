@@ -7,4 +7,7 @@ export const authApi = {
   updateProfile: (data) => api.put('/api/auth/me', data),
   assignRole: (userId, role) => api.post(`/api/auth/admin/users/${userId}/roles/${role}`),
   removeRole: (userId, role) => api.delete(`/api/auth/admin/users/${userId}/roles/${role}`),
+
+  forgotPassword: (data) => api.post('/api/auth/forgot-password', data),
+  verifyOtpResetPassword: (data) => api.post('/api/auth/reset-password/verify-otp', data),
 };

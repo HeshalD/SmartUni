@@ -11,6 +11,8 @@ import LoginPage          from './pages/auth/LoginPage';
 import SignupPage         from './pages/auth/SignupPage';
 import OAuth2CallbackPage from './pages/auth/OAuth2CallbackPage';
 import ProfilePage        from './pages/auth/ProfilePage';
+import ForgotPasswordPage from './pages/auth/ForgotPasswordPage';
+import ResetPasswordPage from './pages/auth/ResetPasswordPage';
 
 // App pages
 import DashboardPage      from './pages/DashboardPage';
@@ -47,6 +49,8 @@ export default function App() {
           {/* Public routes */}
           <Route path="/login"           element={<LoginPage />} />
           <Route path="/signup"          element={<SignupPage />} />
+          <Route path="/forgot-password" element={<ForgotPasswordPage />} />
+          <Route path="/reset-password" element={<ResetPasswordPage />} />
           <Route path="/oauth2/callback" element={<OAuth2CallbackPage />} />
 
           {/* Authenticated routes – wrapped in layout with Navbar */}
