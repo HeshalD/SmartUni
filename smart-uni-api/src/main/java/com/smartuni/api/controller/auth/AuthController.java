@@ -1,8 +1,10 @@
 package com.smartuni.api.controller.auth;
 
+import com.smartuni.api.dto.request.ForgotPasswordRequest;
 import com.smartuni.api.dto.request.LoginRequest;
 import com.smartuni.api.dto.request.SignupRequest;
 import com.smartuni.api.dto.request.UpdateProfileRequest;
+import com.smartuni.api.dto.request.VerifyOtpResetPasswordRequest;
 import com.smartuni.api.dto.responce.AuthResponse;
 import com.smartuni.api.dto.responce.UserProfileResponse;
 import com.smartuni.api.model.auth.Role;
@@ -15,6 +17,7 @@ import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
+import java.util.Map;
 
 @RestController
 @RequestMapping("/api/auth")
@@ -69,4 +72,23 @@ public class AuthController {
             @PathVariable Role role) {
         return ResponseEntity.ok(authService.removeRole(userId, role));
     }
+
+    @PostMapping("/forgot-password")
+    public ResponseEntity<?> forgotPassword(@Valid @RequestBody ForgotPasswordRequest request) {
+        authService.forgotPassword(request);
+        return ResponseEntity.ok(Map.of(
+            "message", "If an account with that email exists, an OTP has been sent."
+        ));
+    }
+
+    @PostMapping("/reset-password/verify-otp")
+        public ResponseEntity<?> verifyOtpAndResetPassword(
+            @Valid @RequestBody VerifyOtpResetPasswordRequest request) {
+            authService.verifyOtpAndResetPassword(request);
+        return ResponseEntity.ok(Map.of(
+            "message", "Password reset successfully."
+        ));
+    }
+
+
 }

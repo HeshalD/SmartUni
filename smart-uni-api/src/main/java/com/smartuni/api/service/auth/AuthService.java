@@ -1,8 +1,10 @@
 package com.smartuni.api.service.auth;
 
+import com.smartuni.api.dto.request.ForgotPasswordRequest;
 import com.smartuni.api.dto.request.LoginRequest;
 import com.smartuni.api.dto.request.SignupRequest;
 import com.smartuni.api.dto.request.UpdateProfileRequest;
+import com.smartuni.api.dto.request.VerifyOtpResetPasswordRequest;
 import com.smartuni.api.dto.responce.AuthResponse;
 import com.smartuni.api.dto.responce.UserProfileResponse;
 import com.smartuni.api.exception.BadRequestException;
@@ -17,6 +19,10 @@ import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+import java.security.SecureRandom;
+import java.time.Instant;
+import java.time.temporal.ChronoUnit;
+
 
 import java.util.Set;
 
@@ -28,6 +34,7 @@ public class AuthService {
     private final PasswordEncoder passwordEncoder;
     private final JwtUtil jwtUtil;
     private final AuthenticationManager authenticationManager;
+    private final EmailService emailService;
 
     public AuthResponse signup(SignupRequest request) {
     if (userRepository.existsByEmail(request.getEmail())) {
@@ -78,6 +85,47 @@ public class AuthService {
         userRepository.save(user);
         return toProfileResponse(user);
     }
+
+    public void forgotPassword(ForgotPasswordRequest request) {
+    User user = userRepository.findByEmail(request.getEmail()).orElse(null);
+
+    // Always return silently to avoid revealing whether the email exists
+    if (user == null) {
+        return;
+    }
+
+    String otp = generateOtp();
+
+    user.setPasswordResetOtp(otp);
+    user.setPasswordResetOtpExpiry(Instant.now().plus(10, ChronoUnit.MINUTES));
+
+    userRepository.save(user);
+
+    emailService.sendPasswordResetOtp(user.getEmail(), otp);
+}
+
+    public void verifyOtpAndResetPassword(VerifyOtpResetPasswordRequest request) {
+        User user = userRepository.findByEmail(request.getEmail())
+                .orElseThrow(() -> new BadRequestException("Invalid email or OTP"));
+
+        if (user.getPasswordResetOtp() == null || user.getPasswordResetOtpExpiry() == null) {
+            throw new BadRequestException("No password reset OTP found");
+        }
+
+        if (Instant.now().isAfter(user.getPasswordResetOtpExpiry())) {
+            throw new BadRequestException("OTP has expired");
+        }
+
+        if (!user.getPasswordResetOtp().equals(request.getOtp())) {
+            throw new BadRequestException("Invalid OTP");
+        }
+
+        user.setPasswordHash(passwordEncoder.encode(request.getNewPassword()));
+        user.setPasswordResetOtp(null);
+        user.setPasswordResetOtpExpiry(null);
+
+        userRepository.save(user);
+}
 
     // ── Admin helpers ────────────────────────────────────────────────────────
 
@@ -140,5 +188,10 @@ public class AuthService {
                 .provider(user.getProvider().name())
                 .createdAt(user.getCreatedAt())
                 .build();
+    }
+
+    private String generateOtp() {
+        SecureRandom random = new SecureRandom();
+        return String.format("%06d", random.nextInt(1000000));
     }
 }

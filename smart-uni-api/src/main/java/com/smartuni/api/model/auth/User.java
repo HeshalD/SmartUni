@@ -48,4 +48,7 @@ public class User {
 
     @LastModifiedDate
     private Instant updatedAt;
+
+    private String passwordResetOtp;
+    private Instant passwordResetOtpExpiry;
 }
