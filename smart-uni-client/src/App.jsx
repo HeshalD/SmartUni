@@ -1,121 +1,88 @@
-import { useState } from 'react'
-import reactLogo from './assets/react.svg'
-import viteLogo from './assets/vite.svg'
-import heroImg from './assets/hero.png'
-import './App.css'
+import { Routes, Route, Navigate } from 'react-router-dom';
+import { AuthProvider } from './context/AuthContext';
+import { PrivateRoute, AdminRoute } from './components/PrivateRoute';
+import AppLayout from './components/AppLayout';
+import AdminPage from './pages/admin/AdminPage';
+import { NotificationProvider } from './context/NotificationContext';
+import './App.css';
 
-function App() {
-  const [count, setCount] = useState(0)
+// Auth pages
+import LoginPage          from './pages/auth/LoginPage';
+import SignupPage         from './pages/auth/SignupPage';
+import OAuth2CallbackPage from './pages/auth/OAuth2CallbackPage';
+import ProfilePage        from './pages/auth/ProfilePage';
+import ForgotPasswordPage from './pages/auth/ForgotPasswordPage';
+import ResetPasswordPage  from './pages/auth/ResetPasswordPage';
 
+// App pages
+import DashboardPage      from './pages/DashboardPage';
+import NotificationsPage  from './pages/notifications/NotificationsPage';
+
+// Resource pages
+import ResourceDetail from './pages/resources/ResourceDetail';
+import ResourceForm from './pages/resources/ResourceForm';
+import ResourceList from './pages/resources/ResourceList';
+
+// Placeholder pages (implemented by other team members)
+// import BookingsPage    from './pages/bookings/BookingsPage';
+// import TicketsPage     from './pages/tickets/TicketsPage';
+
+function PlaceholderPage({ name }) {
   return (
-    <>
-      <section id="center">
-        <div className="hero">
-          <img src={heroImg} className="base" width="170" height="179" alt="" />
-          <img src={reactLogo} className="framework" alt="React logo" />
-          <img src={viteLogo} className="vite" alt="Vite logo" />
-        </div>
-        <div>
-          <h1>Get started</h1>
-          <p>
-            Edit <code>src/App.jsx</code> and save to test <code>HMR</code>
-          </p>
-        </div>
-        <button
-          className="counter"
-          onClick={() => setCount((count) => count + 1)}
-        >
-          Count is {count}
-        </button>
-      </section>
-
-      <div className="ticks"></div>
-
-      <section id="next-steps">
-        <div id="docs">
-          <svg className="icon" role="presentation" aria-hidden="true">
-            <use href="/icons.svg#documentation-icon"></use>
-          </svg>
-          <h2>Documentation</h2>
-          <p>Your questions, answered</p>
-          <ul>
-            <li>
-              <a href="https://vite.dev/" target="_blank">
-                <img className="logo" src={viteLogo} alt="" />
-                Explore Vite
-              </a>
-            </li>
-            <li>
-              <a href="https://react.dev/" target="_blank">
-                <img className="button-icon" src={reactLogo} alt="" />
-                Learn more
-              </a>
-            </li>
-          </ul>
-        </div>
-        <div id="social">
-          <svg className="icon" role="presentation" aria-hidden="true">
-            <use href="/icons.svg#social-icon"></use>
-          </svg>
-          <h2>Connect with us</h2>
-          <p>Join the Vite community</p>
-          <ul>
-            <li>
-              <a href="https://github.com/vitejs/vite" target="_blank">
-                <svg
-                  className="button-icon"
-                  role="presentation"
-                  aria-hidden="true"
-                >
-                  <use href="/icons.svg#github-icon"></use>
-                </svg>
-                GitHub
-              </a>
-            </li>
-            <li>
-              <a href="https://chat.vite.dev/" target="_blank">
-                <svg
-                  className="button-icon"
-                  role="presentation"
-                  aria-hidden="true"
-                >
-                  <use href="/icons.svg#discord-icon"></use>
-                </svg>
-                Discord
-              </a>
-            </li>
-            <li>
-              <a href="https://x.com/vite_js" target="_blank">
-                <svg
-                  className="button-icon"
-                  role="presentation"
-                  aria-hidden="true"
-                >
-                  <use href="/icons.svg#x-icon"></use>
-                </svg>
-                X.com
-              </a>
-            </li>
-            <li>
-              <a href="https://bsky.app/profile/vite.dev" target="_blank">
-                <svg
-                  className="button-icon"
-                  role="presentation"
-                  aria-hidden="true"
-                >
-                  <use href="/icons.svg#bluesky-icon"></use>
-                </svg>
-                Bluesky
-              </a>
-            </li>
-          </ul>
-        </div>
-      </section>
-
-      <div className="ticks"></div>
-      <section id="spacer"></section>
-    </>
-  )
+    <div className="page-container">
+      <h1 className="page-title">{name}</h1>
+      <p style={{ color: '#6b7280' }}>This section is implemented by another team member.</p>
+    </div>
+  );
 }
 
-export default App
+function ProtectedAppLayout() {
+  return (
+    <NotificationProvider>
+      <AppLayout />
+    </NotificationProvider>
+  );
+}
+
+export default function App() {
+  return (
+    <AuthProvider>
+      <Routes>
+        {/* Public routes */}
+        <Route path="/login"           element={<LoginPage />} />
+        <Route path="/signup"          element={<SignupPage />} />
+        <Route path="/forgot-password" element={<ForgotPasswordPage />} />
+        <Route path="/reset-password"  element={<ResetPasswordPage />} />
+        <Route path="/oauth2/callback" element={<OAuth2CallbackPage />} />
+
+        {/* Authenticated routes – wrapped in layout with Navbar */}
+        <Route element={<PrivateRoute />}>
+          <Route element={<ProtectedAppLayout />}>
+            <Route path="/dashboard"     element={<DashboardPage />} />
+            <Route path="/notifications" element={<NotificationsPage />} />
+            <Route path="/profile"       element={<ProfilePage />} />
+
+            {/* Resource routes */}
+            <Route path="/resources"       element={<ResourceList />} />
+            <Route path="/resources/new"   element={<ResourceForm />} />
+            <Route path="/resources/:id"   element={<ResourceDetail />} />
+            <Route path="/resources/:id/edit" element={<ResourceForm />} />
+
+            {/* Other modules (replace placeholders with real pages) */}
+            <Route path="/bookings"   element={<PlaceholderPage name="Bookings" />} />
+            <Route path="/tickets"    element={<PlaceholderPage name="Tickets" />} />
+
+            {/* Admin-only routes */}
+            <Route element={<AdminRoute />}>
+              <Route path="/admin" element={<AdminPage />} />
+            </Route>
+          </Route>
+        </Route>
+
+        {/* Default redirect */}
+        <Route path="/"   element={<Navigate to="/dashboard" replace />} />
+        <Route path="*"   element={<Navigate to="/dashboard" replace />} />
+      </Routes>
+    </AuthProvider>
+  );
+}
