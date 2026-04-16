@@ -58,4 +58,8 @@ public class JwtUtil {
     public String getUserId(String token) {
         return parseToken(token).getSubject();
     }
+
+    public String getEmail(String token) {
+        return parseToken(token).get("email", String.class);
+    }
 }
