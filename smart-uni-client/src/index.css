@@ -303,19 +303,6 @@ input, textarea { font: inherit; }
   display: flex;
   flex-direction: column;
   gap: 0.5rem;
-* {
-  box-sizing: border-box;
-}
-
-body {
-  margin: 0;
-  font-family: 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
-  color: #112133;
-  background: #f3f7fd;
-}
-
-#root {
-  min-height: 100vh;
 }
 .notification-item {
   background: var(--color-surface);
@@ -581,9 +568,3 @@ body {
 }
 
 .navbar__link--tech { color: var(--color-warning); }
-h1,
-h2,
-h3,
-p {
-  margin: 0;
-}
