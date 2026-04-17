@@ -8,6 +8,7 @@ import com.smartuni.api.service.resource.ResourceService;
 import jakarta.validation.Valid;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -39,11 +40,13 @@ public class ResourceController {
     }
 
     @PostMapping
+    @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<ResourceResponse> createResource(@Valid @RequestBody CreateResourceRequest request) {
         return ResponseEntity.status(HttpStatus.CREATED).body(resourceService.createResource(request));
     }
 
     @PutMapping("/{id}")
+    @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<ResourceResponse> updateResource(
         @PathVariable String id,
         @Valid @RequestBody UpdateResourceRequest request
@@ -52,6 +55,7 @@ public class ResourceController {
     }
 
     @DeleteMapping("/{id}")
+    @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<Void> deleteResource(@PathVariable String id) {
         resourceService.deleteResource(id);
         return ResponseEntity.noContent().build();

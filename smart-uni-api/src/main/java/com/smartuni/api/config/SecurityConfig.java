@@ -3,6 +3,7 @@ package com.smartuni.api.config;
 import com.smartuni.api.service.auth.OAuth2UserServiceImpl;
 import com.smartuni.api.util.JwtUtil;
 import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.HttpMethod;
@@ -23,6 +24,7 @@ import org.springframework.web.cors.CorsConfigurationSource;
 import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 
 import jakarta.servlet.http.HttpServletResponse;
+import java.util.Arrays;
 import java.util.List;
 
 @Configuration
@@ -34,6 +36,15 @@ public class SecurityConfig {
     private final JwtAuthFilter jwtAuthFilter;
     private final OAuth2UserServiceImpl oAuth2UserService;
     private final JwtUtil jwtUtil;
+
+    @Value("${app.oauth2.success-redirect-uri:http://localhost:5173/oauth2/callback}")
+    private String oauth2SuccessRedirectUri;
+
+    @Value("${app.oauth2.failure-redirect-uri:http://localhost:5173/login?error=oauth_failed}")
+    private String oauth2FailureRedirectUri;
+
+    @Value("${app.cors.allowed-origins:http://localhost:5173}")
+    private String corsAllowedOrigins;
 
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
@@ -62,10 +73,10 @@ public class SecurityConfig {
                     String userId = oAuth2User.getAttribute("userId");
                     String email  = oAuth2User.getAttribute("email");
                     String token  = jwtUtil.generateToken(userId, email);
-                    response.sendRedirect("http://localhost:5173/oauth2/callback?token=" + token);
+                    response.sendRedirect(oauth2SuccessRedirectUri + "?token=" + token);
                 })
                 .failureHandler((request, response, ex) -> {
-                    response.sendRedirect("http://localhost:5173/login?error=oauth_failed");
+                    response.sendRedirect(oauth2FailureRedirectUri);
                 })
             )
             .exceptionHandling(ex -> ex
@@ -88,7 +99,9 @@ public class SecurityConfig {
     @Bean
     public CorsConfigurationSource corsConfigurationSource() {
         CorsConfiguration config = new CorsConfiguration();
-        config.setAllowedOrigins(List.of("http://localhost:5173"));
+        // Parse comma-separated origins from environment variable
+        List<String> allowedOrigins = Arrays.asList(corsAllowedOrigins.split(","));
+        config.setAllowedOrigins(allowedOrigins);
         config.setAllowedMethods(List.of("GET", "POST", "PUT", "PATCH", "DELETE", "OPTIONS"));
         config.setAllowedHeaders(List.of("*"));
         config.setAllowCredentials(true);
