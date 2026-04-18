@@ -15,12 +15,13 @@ import java.time.LocalDateTime;
 import java.util.List;
 import java.util.UUID;
 import java.util.stream.Collectors;
-
+import com.smartuni.api.service.notification.NotificationService;
 @Service
 @RequiredArgsConstructor
 public class TicketService {
 
     private final TicketRepository ticketRepository;
+    private final NotificationService notificationService;
 
     // Create a new ticket
     public TicketResponse createTicket(CreateTicketRequest request, String reporterId, String reporterName) {
@@ -79,6 +80,8 @@ public class TicketService {
         Ticket ticket = ticketRepository.findById(id)
                 .orElseThrow(() -> new RuntimeException("Ticket not found with id: " + id));
 
+        TicketStatus oldStatus = ticket.getStatus(); //get old ticket status for notification integration
+
         if (request.getStatus() != null) {
             ticket.setStatus(request.getStatus());
             if (request.getStatus() == TicketStatus.RESOLVED) {
@@ -99,7 +102,19 @@ public class TicketService {
         }
 
         ticket.setUpdatedAt(LocalDateTime.now());
-        return mapToResponse(ticketRepository.save(ticket));
+
+        Ticket savedTicket = ticketRepository.save(ticket);
+
+        //get notification for ticket state change
+        if (request.getStatus() != null && request.getStatus() != oldStatus) {
+        notificationService.notifyTicketStatusChanged(
+                savedTicket.getReporterId(),
+                savedTicket.getId(),
+                savedTicket.getStatus().name()
+            );
+        }
+
+        return mapToResponse(savedTicket);
     }
 
     // Add comment to ticket
@@ -118,7 +133,19 @@ public class TicketService {
 
         ticket.getComments().add(comment);
         ticket.setUpdatedAt(LocalDateTime.now());
-        return mapToResponse(ticketRepository.save(ticket));
+        
+        Ticket savedTicket = ticketRepository.save(ticket);
+
+        // Get notifications when edit comment
+        if (!savedTicket.getReporterId().equals(request.getAuthorId())) {
+            notificationService.notifyNewTicketComment(
+                    savedTicket.getReporterId(),
+                    savedTicket.getId(),
+                    request.getAuthorName()
+            );
+        }
+
+        return mapToResponse(savedTicket);
     }
 
     // Edit comment
