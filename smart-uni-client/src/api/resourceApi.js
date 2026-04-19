@@ -1,16 +1,9 @@
-import axios from 'axios'
-
-const apiClient = axios.create({
-  baseURL: `${import.meta.env.VITE_API_BASE_URL || 'http://localhost:8080'}/api`,
-  headers: {
-    'Content-Type': 'application/json',
-  },
-})
+import api from './axiosInstance'
 
 export const resourceApi = {
-  getAll: (params = {}) => apiClient.get('/resources', { params }),
-  getById: (id) => apiClient.get(`/resources/${id}`),
-  create: (payload) => apiClient.post('/resources', payload),
-  update: (id, payload) => apiClient.put(`/resources/${id}`, payload),
-  remove: (id) => apiClient.delete(`/resources/${id}`),
+  getAll: (params = {}) => api.get('/api/resources', { params }),
+  getById: (id) => api.get(`/api/resources/${id}`),
+  create: (payload) => api.post('/api/resources', payload),
+  update: (id, payload) => api.put(`/api/resources/${id}`, payload),
+  remove: (id) => api.delete(`/api/resources/${id}`),
 }
