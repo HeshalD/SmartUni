@@ -3,7 +3,7 @@ import { Link, useNavigate, useLocation } from 'react-router-dom';
 import { useAuth } from '../../context/AuthContext';
 
 export default function LoginPage() {
-  const { login } = useAuth();
+  const { login, isAdmin } = useAuth();
   const navigate  = useNavigate();
   const location  = useLocation();
   const from      = location.state?.from?.pathname || '/dashboard';
@@ -20,8 +20,10 @@ export default function LoginPage() {
     setError('');
     setLoading(true);
     try {
-      await login(form);
-      navigate(from, { replace: true });
+      const userData = await login(form);
+      // Redirect admins to /admin, others to the original destination
+      const redirectPath = userData.roles?.includes('ADMIN') ? '/admin' : from;
+      navigate(redirectPath, { replace: true });
     } catch (err) {
       setError(err.response?.data?.error || 'Login failed. Check your credentials.');
     } finally {

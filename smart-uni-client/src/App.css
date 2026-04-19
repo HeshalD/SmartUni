@@ -210,29 +210,29 @@
   .app-shell {
     flex-direction: column;
   }
-}
 
-.sidebar {
-  width: 100%;
-  height: auto;
-  position: static;
-  border-bottom: 1px solid rgba(255, 255, 255, 0.08);
-}
+  .sidebar {
+    width: 100%;
+    height: auto;
+    position: static;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+  }
 
-.sidebar__nav {
-  flex-direction: row;
-  flex-wrap: wrap;
-}
+  .sidebar__nav {
+    flex-direction: row;
+    flex-wrap: wrap;
+  }
 
-.topbar {
-  position: static;
-}
+  .topbar {
+    position: static;
+  }
 
-.dashboard-hero,
-.dashboard-bottom-grid {
-  grid-template-columns: 1fr;
-  display: grid;
-  min-height: 100vh;
+  .dashboard-hero,
+  .dashboard-bottom-grid {
+    grid-template-columns: 1fr;
+    display: grid;
+    min-height: 100vh;
+  }
 }
 
 .top-nav {

@@ -1,6 +1,7 @@
 package com.smartuni.api.controller.booking;
 
 import com.smartuni.api.dto.request.BookingRequest;
+import com.smartuni.api.dto.request.BookingUpdateRequest;
 import com.smartuni.api.dto.request.BookingStatusRequest;
 import com.smartuni.api.model.booking.Booking;
 import com.smartuni.api.model.booking.BookingStatus;
@@ -67,6 +68,21 @@ public class BookingController {
         return ResponseEntity.ok(booking);
     }
 
+    // PUT /api/bookings/{id} - Update booking details (user only)
+    @PutMapping("/{id}")
+    @PreAuthorize("isAuthenticated()")
+    public ResponseEntity<Booking> updateBooking(
+            @PathVariable String id,
+            @Valid @RequestBody BookingUpdateRequest request,
+            HttpServletRequest httpRequest) {
+        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+        String userId = auth.getName();
+        String token = extractToken(httpRequest);
+        String userEmail = token != null ? jwtUtil.getEmail(token) : "";
+        Booking booking = bookingService.updateBooking(id, request, userId, userEmail);
+        return ResponseEntity.ok(booking);
+    }
+
     // PUT /api/bookings/{id}/status - Approve, reject or cancel
     @PutMapping("/{id}/status")
     @PreAuthorize("hasRole('ADMIN')")
@@ -81,10 +97,24 @@ public class BookingController {
         return ResponseEntity.ok(booking);
     }
 
-    // DELETE /api/bookings/{id} - Delete a booking
+    // DELETE /api/bookings/{id} - Delete a booking (user only)
     @DeleteMapping("/{id}")
+    @PreAuthorize("isAuthenticated()")
+    public ResponseEntity<Void> deleteBooking(
+            @PathVariable String id,
+            HttpServletRequest httpRequest) {
+        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+        String userId = auth.getName();
+        String token = extractToken(httpRequest);
+        String userEmail = token != null ? jwtUtil.getEmail(token) : "";
+        bookingService.deleteBooking(id, userId, userEmail);
+        return ResponseEntity.noContent().build();
+    }
+
+    // DELETE /api/bookings/{id} - Delete a booking (admin)
+    @DeleteMapping("/{id}/admin")
     @PreAuthorize("hasRole('ADMIN')")
-    public ResponseEntity<Void> deleteBooking(@PathVariable String id) {
+    public ResponseEntity<Void> deleteBookingAdmin(@PathVariable String id) {
         bookingService.deleteBooking(id);
         return ResponseEntity.noContent().build();
     }
