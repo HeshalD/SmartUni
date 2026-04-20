@@ -64,9 +64,11 @@ export default function App() {
 
             {/* Resource routes */}
             <Route path="/resources"       element={<ResourceList />} />
-            <Route path="/resources/new"   element={<ResourceForm />} />
             <Route path="/resources/:id"   element={<ResourceDetail />} />
-            <Route path="/resources/:id/edit" element={<ResourceForm />} />
+            <Route element={<AdminRoute />}>
+              <Route path="/resources/new"   element={<ResourceForm />} />
+              <Route path="/resources/:id/edit" element={<ResourceForm />} />
+            </Route>
 
             {/* Other modules (replace placeholders with real pages) */}
             <Route path="/bookings"   element={<PlaceholderPage name="Bookings" />} />
