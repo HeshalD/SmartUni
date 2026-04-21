@@ -42,8 +42,9 @@ export function NotificationProvider({ children }) {
     fetchUnreadCount();
 
     const interval = setInterval(() => {
+      fetchNotifications(0);   
       fetchUnreadCount();
-    }, 30000);
+    }, 10000); 
 
     return () => clearInterval(interval);
   }, [fetchNotifications, fetchUnreadCount]);

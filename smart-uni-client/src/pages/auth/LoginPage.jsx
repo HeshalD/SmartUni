@@ -1,6 +1,9 @@
 import { useState } from 'react';
 import { Link, useNavigate, useLocation } from 'react-router-dom';
+import { FcGoogle } from 'react-icons/fc';
 import { useAuth } from '../../context/AuthContext';
+import loginIllustration from '../../assets/loginpage.png';
+import './LoginPage.css';
 
 export default function LoginPage() {
   const { login, isAdmin } = useAuth();
@@ -8,8 +11,8 @@ export default function LoginPage() {
   const location  = useLocation();
   const from      = location.state?.from?.pathname || '/dashboard';
 
-  const [form, setForm]     = useState({ email: '', password: '' });
-  const [error, setError]   = useState('');
+  const [form, setForm] = useState({ email: '', password: '' });
+  const [error, setError] = useState('');
   const [loading, setLoading] = useState(false);
 
   const handleChange = (e) =>
@@ -19,6 +22,7 @@ export default function LoginPage() {
     e.preventDefault();
     setError('');
     setLoading(true);
+
     try {
       const userData = await login(form);
       // Redirect admins to /admin, others to the original destination
@@ -36,74 +40,95 @@ export default function LoginPage() {
   };
 
   return (
-    <div className="auth-container">
-      <div className="auth-card">
-        <div className="auth-header">
-          <h1>SmartUni</h1>
-          <p>Sign in to your account</p>
+    <div className="login-page">
+      <div className="login-modal">
+        <div className="login-left-panel">
+          <div className="login-left-content">
+            <div className="login-brand">SmartUni</div>
+
+            <div className="login-illustration-wrapper">
+              <img
+                src={loginIllustration}
+                alt="SmartUni login illustration"
+                className="login-illustration"
+              />
+            </div>
+
+            <div className="login-left-text">
+              <h2>Welcome to SmartUni</h2>
+              <p>Smart campus management made simple.</p>
+            </div>
+          </div>
         </div>
 
-        {error && <div className="alert alert-error">{error}</div>}
+        <div className="login-right-panel">
+          <div className="login-form-card">
+            <div className="login-header">
+              <h1>Login</h1>
+              <p>Welcome back! Please login to your account.</p>
+            </div>
 
-        <form onSubmit={handleSubmit} className="auth-form">
-          <div className="form-group">
-            <label htmlFor="email">Email</label>
-            <input
-              id="email"
-              name="email"
-              type="email"
-              required
-              autoComplete="email"
-              value={form.email}
-              onChange={handleChange}
-              placeholder="you@example.com"
-            />
+            {error && <div className="alert alert-error">{error}</div>}
+
+            <form onSubmit={handleSubmit} className="auth-form">
+              <div className="form-group">
+                <label>Email</label>
+                <input
+                  name="email"
+                  type="email"
+                  value={form.email}
+                  onChange={handleChange}
+                  placeholder="Enter your email"
+                  required
+                />
+              </div>
+
+              <div className="form-group">
+                <label>Password</label>
+                <input
+                  name="password"
+                  type="password"
+                  value={form.password}
+                  onChange={handleChange}
+                  placeholder="Enter your password"
+                  required
+                />
+              </div>
+
+              <div className="login-row">
+                <label className="remember-me">
+                  <input type="checkbox" />
+                  <span>Keep me logged in</span>
+                </label>
+
+                <Link to="/forgot-password" className="forgot-link">
+                  Forgot password?
+                </Link>
+              </div>
+
+              <button className="btn btn-primary btn-full login-submit-btn" disabled={loading}>
+                {loading ? 'Signing in...' : 'Login'}
+              </button>
+            </form>
+
+            <div className="divider">
+              <span>or</span>
+            </div>
+
+            <button
+              type="button"
+              className="btn btn-google btn-full google-login-btn"
+              onClick={handleGoogleLogin}
+            >
+              <FcGoogle size={20} />
+              <span>Continue with Google</span>
+            </button>
+
+            <p className="auth-footer">
+              Don&apos;t have an account? <Link to="/signup">Sign up</Link>
+            </p>
           </div>
-
-          <div className="form-group">
-            <label htmlFor="password">Password</label>
-            <input
-              id="password"
-              name="password"
-              type="password"
-              required
-              autoComplete="current-password"
-              value={form.password}
-              onChange={handleChange}
-              placeholder="••••••••"
-            />
-          </div>
-
-          <div style={{ display: 'flex', justifyContent: 'flex-end', marginTop: '-0.25rem' }}>
-              <Link to="/forgot-password" style={{ fontSize: '0.9rem' }}>
-                Forgot password?
-              </Link>
-          </div>
-
-          <button type="submit" className="btn btn-primary btn-full" disabled={loading}>
-            {loading ? 'Signing in…' : 'Sign in'}
-          </button>
-        </form>
-
-        <div className="divider"><span>or</span></div>
-
-        <button
-          type="button"
-          className="btn btn-google btn-full"
-          onClick={handleGoogleLogin}
-        >
-          <img
-            src="https://www.google.com/favicon.ico"
-            alt=""
-            width="18"
-            height="18"
-          />
-          Continue with Google
-        </button>
-
-        <p className="auth-footer">
-          Don't have an account? <Link to="/signup">Sign up</Link>
-        </p>
+        </div>
       </div>
     </div>
   );

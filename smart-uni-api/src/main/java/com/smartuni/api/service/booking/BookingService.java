@@ -6,19 +6,21 @@ import com.smartuni.api.dto.request.BookingStatusRequest;
 import com.smartuni.api.model.booking.Booking;
 import com.smartuni.api.model.booking.BookingStatus;
 import com.smartuni.api.repository.booking.BookingRepository;
+import com.smartuni.api.service.notification.NotificationService;
 import com.smartuni.api.exception.BadRequestException;
 import com.smartuni.api.exception.ResourceNotFoundException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
-import java.util.List;
+import java.util.List; 
 
 @Service
 @RequiredArgsConstructor // Lombok: generates constructor for all final fields (replaces @Autowired)
 public class BookingService {
 
     private final BookingRepository bookingRepository;
+    private final NotificationService notificationService; 
 
     // Create a new booking
     public Booking createBooking(BookingRequest request, String userId, String userEmail) {
@@ -147,7 +149,22 @@ public class BookingService {
         booking.setReviewedAt(LocalDateTime.now());
         booking.setUpdatedAt(LocalDateTime.now());
 
-        return bookingRepository.save(booking);
+        Booking savedBooking = bookingRepository.save(booking);
+
+        //Get notification when Booking status changed
+        if (request.getStatus() == BookingStatus.APPROVED) {
+            notificationService.notifyBookingApproved(savedBooking.getUserId(), savedBooking.getId());
+        } else if (request.getStatus() == BookingStatus.REJECTED) {
+            notificationService.notifyBookingRejected(
+                    savedBooking.getUserId(),
+                    savedBooking.getId(),
+                    request.getAdminNote() != null ? request.getAdminNote() : "No reason provided"
+            );
+        } else if (request.getStatus() == BookingStatus.CANCELLED) {
+            notificationService.notifyBookingCancelled(savedBooking.getUserId(), savedBooking.getId());
+        }
+
+        return savedBooking;
     }
 
     // Delete a booking (user only)
