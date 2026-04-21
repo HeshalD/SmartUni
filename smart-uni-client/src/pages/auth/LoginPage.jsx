@@ -6,10 +6,10 @@ import loginIllustration from '../../assets/loginpage.png';
 import './LoginPage.css';
 
 export default function LoginPage() {
-  const { login } = useAuth();
-  const navigate = useNavigate();
-  const location = useLocation();
-  const from = location.state?.from?.pathname || '/dashboard';
+  const { login, isAdmin } = useAuth();
+  const navigate  = useNavigate();
+  const location  = useLocation();
+  const from      = location.state?.from?.pathname || '/dashboard';
 
   const [form, setForm] = useState({ email: '', password: '' });
   const [error, setError] = useState('');
@@ -24,8 +24,10 @@ export default function LoginPage() {
     setLoading(true);
 
     try {
-      await login(form);
-      navigate(from, { replace: true });
+      const userData = await login(form);
+      // Redirect admins to /admin, others to the original destination
+      const redirectPath = userData.roles?.includes('ADMIN') ? '/admin' : from;
+      navigate(redirectPath, { replace: true });
     } catch (err) {
       setError(err.response?.data?.error || 'Login failed. Check your credentials.');
     } finally {

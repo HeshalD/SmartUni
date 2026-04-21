@@ -2,6 +2,7 @@ import { Routes, Route, Navigate } from 'react-router-dom';
 import { AuthProvider } from './context/AuthContext';
 import { PrivateRoute, AdminRoute } from './components/PrivateRoute';
 import AppLayout from './components/AppLayout';
+import AdminLayout from './components/AdminLayout';
 import AdminPage from './pages/admin/AdminPage';
 import { NotificationProvider } from './context/NotificationContext';
 import './App.css';
@@ -23,6 +24,14 @@ import ResourceDetail from './pages/resources/ResourceDetail';
 import ResourceForm from './pages/resources/ResourceForm';
 import ResourceList from './pages/resources/ResourceList';
 
+// Booking pages
+import CreateBookingPage from './pages/bookings/CreateBooking';
+import MyBookingsPage from './pages/bookings/MyBookingsPage';
+import BookingDetailPage from './pages/bookings/BookingDetails';
+
+//Admin pages
+import AdminBookingsPage from './pages/admin/AdminBookingsPage';
+
 // Placeholder pages (implemented by other team members)
 // import BookingsPage    from './pages/bookings/BookingsPage';
 
@@ -42,30 +51,42 @@ function PlaceholderPage({ name }) {
 
 function ProtectedAppLayout() {
   return (
-    <NotificationProvider>
-      <AppLayout />
-    </NotificationProvider>
+    <AppLayout />
   );
 }
 
 export default function App() {
   return (
-    <AuthProvider>
-      <Routes>
-        {/* Public routes */}
-        <Route path="/login"           element={<LoginPage />} />
-        <Route path="/signup"          element={<SignupPage />} />
-        <Route path="/forgot-password" element={<ForgotPasswordPage />} />
-        <Route path="/reset-password"  element={<ResetPasswordPage />} />
-        <Route path="/oauth2/callback" element={<OAuth2CallbackPage />} />
+    <NotificationProvider>
+      <AuthProvider>
+        <Routes>
+          {/* Public routes */}
+          <Route path="/login"           element={<LoginPage />} />
+          <Route path="/signup"          element={<SignupPage />} />
+          <Route path="/forgot-password" element={<ForgotPasswordPage />} />
+          <Route path="/reset-password"  element={<ResetPasswordPage />} />
+          <Route path="/oauth2/callback" element={<OAuth2CallbackPage />} />
 
-        {/* Authenticated routes – wrapped in layout with Navbar */}
-        <Route element={<PrivateRoute />}>
-          <Route element={<ProtectedAppLayout />}>
-            <Route path="/dashboard"     element={<DashboardPage />} />
-            <Route path="/notifications" element={<NotificationsPage />} />
-            <Route path="/profile"       element={<ProfilePage />} />
+          {/* Authenticated routes – wrapped in layout with Navbar */}
+          <Route element={<PrivateRoute />}>
+            <Route element={<AppLayout />}>
+              <Route path="/dashboard"     element={<DashboardPage />} />
+              <Route path="/notifications" element={<NotificationsPage />} />
+              <Route path="/profile"       element={<ProfilePage />} />
 
+              {/* Resource routes */}
+              <Route path="/resources"       element={<ResourceList />} />
+              <Route path="/resources/new"   element={<ResourceForm />} />
+              <Route path="/resources/:id"   element={<ResourceDetail />} />
+              <Route path="/resources/:id/edit" element={<ResourceForm />} />
+
+              {/* Other modules (replace placeholders with real pages) */}
+              <Route path="/bookings"   element={<MyBookingsPage />} />
+              <Route path="/bookings/new" element={<CreateBookingPage />} />
+              <Route path="/bookings/:id" element={<BookingDetailPage />} />
+
+              <Route path="/tickets"    element={<PlaceholderPage name="Tickets" />} />
+            </Route>
             {/* Resource routes */}
             <Route path="/resources"       element={<ResourceList />} />
             <Route path="/resources/:id"   element={<ResourceDetail />} />
@@ -84,15 +105,18 @@ export default function App() {
 
             {/* Admin-only routes */}
             <Route element={<AdminRoute />}>
-              <Route path="/admin" element={<AdminPage />} />
+              <Route element={<AdminLayout />}>
+                <Route path="/admin" element={<AdminPage />} />
+                <Route path="/admin/bookings" element={<AdminBookingsPage />} />
+              </Route>
             </Route>
           </Route>
-        </Route>
 
-        {/* Default redirect */}
-        <Route path="/"   element={<Navigate to="/dashboard" replace />} />
-        <Route path="*"   element={<Navigate to="/dashboard" replace />} />
-      </Routes>
-    </AuthProvider>
+          {/* Default redirect */}
+          <Route path="/"   element={<Navigate to="/dashboard" replace />} />
+          <Route path="*"   element={<Navigate to="/dashboard" replace />} />
+        </Routes>
+      </AuthProvider>
+    </NotificationProvider>
   );
 }

@@ -1,6 +1,7 @@
 package com.smartuni.api.service.booking;
 
 import com.smartuni.api.dto.request.BookingRequest;
+import com.smartuni.api.dto.request.BookingUpdateRequest;
 import com.smartuni.api.dto.request.BookingStatusRequest;
 import com.smartuni.api.model.booking.Booking;
 import com.smartuni.api.model.booking.BookingStatus;
@@ -88,7 +89,52 @@ public class BookingService {
         return bookingRepository.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException("Booking not found with id: " + id));
     }
-    
+
+    // Update booking details (user only)
+    public Booking updateBooking(String id, BookingUpdateRequest request, String userId, String userEmail) {
+
+        Booking booking = getBookingById(id);
+
+        // Validate ownership
+        if (!booking.getUserId().equals(userId)) {
+            throw new BadRequestException("You can only update your own bookings");
+        }
+
+        // Only allow updates for PENDING bookings
+        if (booking.getStatus() != BookingStatus.PENDING) {
+            throw new BadRequestException("Only pending bookings can be updated");
+        }
+
+        // Validate time range
+        if (!request.getEndTime().isAfter(request.getStartTime())) {
+            throw new BadRequestException("End time must be after start time");
+        }
+
+        // Check for conflicts (exclude current booking)
+        List<Booking> conflicts = bookingRepository
+                .findByResourceIdAndStatusAndStartTimeLessThanAndEndTimeGreaterThan(
+                        booking.getResourceId(),
+                        BookingStatus.APPROVED,
+                        request.getEndTime(),
+                        request.getStartTime())
+                .stream()
+                .filter(b -> !b.getId().equals(id))
+                .toList();
+
+        if (!conflicts.isEmpty()) {
+            throw new BadRequestException("Resource is already booked for this time slot");
+        }
+
+        // Update booking details (resource remains unchanged)
+        booking.setStartTime(request.getStartTime());
+        booking.setEndTime(request.getEndTime());
+        booking.setPurpose(request.getPurpose());
+        booking.setExpectedAttendees(request.getExpectedAttendees());
+        booking.setUpdatedAt(LocalDateTime.now());
+
+        return bookingRepository.save(booking);
+    }
+
     // Update booking status (approve, reject, cancel)
     public Booking updateBookingStatus(String id, BookingStatusRequest request, String adminEmail) {
 
@@ -121,7 +167,24 @@ public class BookingService {
         return savedBooking;
     }
 
-    // Delete a booking
+    // Delete a booking (user only)
+    public void deleteBooking(String id, String userId, String userEmail) {
+        Booking booking = getBookingById(id);
+
+        // Validate ownership
+        if (!booking.getUserId().equals(userId)) {
+            throw new BadRequestException("You can only delete your own bookings");
+        }
+
+        // Only allow deletion of PENDING bookings
+        if (booking.getStatus() != BookingStatus.PENDING) {
+            throw new BadRequestException("Only pending bookings can be deleted");
+        }
+
+        bookingRepository.delete(booking);
+    }
+
+    // Delete a booking (admin only)
     public void deleteBooking(String id) {
         Booking booking = getBookingById(id);
         bookingRepository.delete(booking);
