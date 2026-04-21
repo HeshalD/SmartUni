@@ -25,6 +25,10 @@ import ResourceList from './pages/resources/ResourceList';
 
 // Placeholder pages (implemented by other team members)
 // import BookingsPage    from './pages/bookings/BookingsPage';
+
+import TicketsPage       from './pages/tickets/TicketsPage';
+import CreateTicketPage  from './pages/tickets/CreateTicketPage';
+import TicketDetailPage  from './pages/tickets/TicketDetailPage';
 // import TicketsPage     from './pages/tickets/TicketsPage';
 
 function PlaceholderPage({ name }) {
@@ -64,13 +68,19 @@ export default function App() {
 
             {/* Resource routes */}
             <Route path="/resources"       element={<ResourceList />} />
-            <Route path="/resources/new"   element={<ResourceForm />} />
             <Route path="/resources/:id"   element={<ResourceDetail />} />
-            <Route path="/resources/:id/edit" element={<ResourceForm />} />
+            <Route element={<AdminRoute />}>
+              <Route path="/resources/new"   element={<ResourceForm />} />
+              <Route path="/resources/:id/edit" element={<ResourceForm />} />
+            </Route>
 
             {/* Other modules (replace placeholders with real pages) */}
             <Route path="/bookings"   element={<PlaceholderPage name="Bookings" />} />
-            <Route path="/tickets"    element={<PlaceholderPage name="Tickets" />} />
+
+            
+            <Route path="/tickets"          element={<TicketsPage />} />
+            <Route path="/tickets/new"      element={<CreateTicketPage />} />
+            <Route path="/tickets/:id"      element={<TicketDetailPage />} />
 
             {/* Admin-only routes */}
             <Route element={<AdminRoute />}>
