@@ -74,11 +74,6 @@ export default function App() {
               <Route path="/notifications" element={<NotificationsPage />} />
               <Route path="/profile"       element={<ProfilePage />} />
 
-              {/* Resource routes */}
-              <Route path="/resources"       element={<ResourceList />} />
-              <Route path="/resources/new"   element={<ResourceForm />} />
-              <Route path="/resources/:id"   element={<ResourceDetail />} />
-              <Route path="/resources/:id/edit" element={<ResourceForm />} />
 
               {/* Other modules (replace placeholders with real pages) */}
               <Route path="/bookings"   element={<MyBookingsPage />} />
@@ -94,10 +89,6 @@ export default function App() {
               <Route path="/resources/new"   element={<ResourceForm />} />
               <Route path="/resources/:id/edit" element={<ResourceForm />} />
             </Route>
-
-            {/* Other modules (replace placeholders with real pages) */}
-            <Route path="/bookings"   element={<PlaceholderPage name="Bookings" />} />
-
             
             <Route path="/tickets"          element={<TicketsPage />} />
             <Route path="/tickets/new"      element={<CreateTicketPage />} />
