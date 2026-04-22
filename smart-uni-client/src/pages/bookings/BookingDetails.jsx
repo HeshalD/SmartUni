@@ -1,6 +1,7 @@
 import { useState, useEffect } from "react";
 import { useParams, Link } from "react-router-dom";
 import { bookingsApi } from "../../api/bookingApi";
+import { FaHourglassHalf, FaCheckCircle, FaTimesCircle, FaBan, FaEdit, FaTrashAlt, FaArrowLeft } from "react-icons/fa";
 
 const STATUS_STYLES = {
   PENDING:   { background: "#fef3c7", color: "#92400e" },
@@ -10,10 +11,10 @@ const STATUS_STYLES = {
 };
 
 const STATUS_ICONS = {
-  PENDING:   "⏳",
-  APPROVED:  "✅",
-  REJECTED:  "❌",
-  CANCELLED: "🚫",
+  PENDING:   <FaHourglassHalf size={20} />,
+  APPROVED:  <FaCheckCircle size={20} />,
+  REJECTED:  <FaTimesCircle size={20} />,
+  CANCELLED: <FaBan size={20} />,
 };
 
 export default function BookingDetailPage() {
@@ -168,8 +169,9 @@ export default function BookingDetailPage() {
   // Loading state
   if (loading) {
     return (
-      <div className="loading-spinner">
-        <div className="spinner" />
+      <div style={{ textAlign: "center", padding: "40px", color: "#9ca3af", fontSize: "14px" }}>
+        <div style={{ width: "32px", height: "32px", border: "3px solid #f3f4f6", borderTopColor: "#4f46e5", borderRadius: "50%", margin: "0 auto 12px", animation: "spin 0.8s linear infinite" }} />
+        Loading booking...
       </div>
     );
   }
@@ -177,89 +179,119 @@ export default function BookingDetailPage() {
   // Error state
   if (error) {
     return (
-      <div className="page-container">
-        <div className="alert alert-error" style={{ marginTop: "2rem" }}>
+      <div style={{ maxWidth: "1280px", margin: "0 auto", padding: "24px" }}>
+        <div style={{ marginTop: "32px", padding: "12px 16px", borderRadius: "10px", background: "#fef2f2", color: "#991b1b", fontSize: "14px", fontWeight: 500, border: "1px solid #fee2e2" }}>
           {error}
         </div>
-        <Link to="/booking" className="btn btn-outline" style={{ marginTop: "1rem" }}>
-          ← Back to My Bookings
+        <Link to="/bookings" style={{ display: "inline-flex", alignItems: "center", gap: "6px", marginTop: "16px", padding: "8px 14px", borderRadius: "10px", background: "#f3f4f6", color: "#374151", fontSize: "13px", fontWeight: 600, textDecoration: "none", border: "1px solid #e5e7eb", transition: "background 0.15s" }}>
+          <FaArrowLeft size={12} />
+          Back to My Bookings
         </Link>
       </div>
     );
   }
 
   return (
-    <div className="page-container">
+    <div style={{ maxWidth: "1280px", margin: "0 auto", padding: "24px" }}>
 
       {/* Header */}
-      <div className="page-header">
+      <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", flexWrap: "wrap", gap: "16px", marginBottom: "28px" }}>
         <div>
-          <h1 className="page-title">Booking Details</h1>
-          <p className="page-subtitle">Full details of your booking request</p>
+          <h1 style={{ fontSize: "24px", fontWeight: 700, color: "#111827", margin: 0 }}>Booking Details</h1>
+          <p style={{ fontSize: "14px", color: "#6b7280", margin: "4px 0 0 0" }}>Full details of your booking request</p>
         </div>
-        <div style={{ display: "flex", gap: "0.75rem" }}>
+        <div style={{ display: "flex", gap: "10px" }}>
           {booking.status === "PENDING" && (
             <>
               <button
                 onClick={handleEditClick}
-                className="btn btn-primary"
                 disabled={isEditing || deleteLoading}
+                style={{
+                  display: "inline-flex",
+                  alignItems: "center",
+                  gap: "6px",
+                  padding: "9px 16px",
+                  borderRadius: "10px",
+                  background: isEditing || deleteLoading ? "#f3f4f6" : "#4f46e5",
+                  color: isEditing || deleteLoading ? "#9ca3af" : "#fff",
+                  fontSize: "13px",
+                  fontWeight: 600,
+                  border: "none",
+                  cursor: isEditing || deleteLoading ? "not-allowed" : "pointer",
+                  transition: "background 0.15s",
+                }}
+                onMouseEnter={(e) => { if (!isEditing && !deleteLoading) e.currentTarget.style.background = "#4338ca"; }}
+                onMouseLeave={(e) => { if (!isEditing && !deleteLoading) e.currentTarget.style.background = "#4f46e5"; }}
               >
+                <FaEdit size={13} />
                 {isEditing ? "Editing..." : "Edit Booking"}
               </button>
               <button
                 onClick={handleDelete}
-                className="btn"
                 disabled={deleteLoading || isEditing}
                 style={{
-                  background: "var(--color-danger)",
-                  color: "#fff",
+                  display: "inline-flex",
+                  alignItems: "center",
+                  gap: "6px",
+                  padding: "9px 16px",
+                  borderRadius: "10px",
+                  background: deleteLoading || isEditing ? "#f9fafb" : "#ef4444",
+                  color: deleteLoading || isEditing ? "#d1d5db" : "#fff",
                   border: "none",
+                  fontSize: "13px",
+                  fontWeight: 600,
+                  cursor: deleteLoading || isEditing ? "not-allowed" : "pointer",
+                  transition: "background 0.15s",
                 }}
+                onMouseEnter={(e) => { if (!deleteLoading && !isEditing) e.currentTarget.style.background = "#dc2626"; }}
+                onMouseLeave={(e) => { if (!deleteLoading && !isEditing) e.currentTarget.style.background = "#ef4444"; }}
               >
+                <FaTrashAlt size={13} />
                 {deleteLoading ? "Deleting..." : "Delete Booking"}
               </button>
             </>
           )}
-          <Link to="/bookings" className="btn btn-outline">
-            ← Back to My Bookings
+          <Link to="/bookings" style={{ display: "inline-flex", alignItems: "center", gap: "6px", padding: "9px 16px", borderRadius: "10px", background: "#f3f4f6", color: "#374151", fontSize: "13px", fontWeight: 600, textDecoration: "none", border: "1px solid #e5e7eb", transition: "background 0.15s" }}>
+            <FaArrowLeft size={12} />
+            Back to My Bookings
           </Link>
         </div>
       </div>
 
       {/* Success message */}
       {editSuccess && (
-        <div className="alert alert-success">{editSuccess}</div>
+        <div style={{ marginBottom: "16px", padding: "12px 16px", borderRadius: "10px", background: "#ecfdf5", color: "#065f46", fontSize: "14px", fontWeight: 500, border: "1px solid #d1fae5" }}>{editSuccess}</div>
       )}
 
       {/* Edit Form */}
       {isEditing && (
         <div
           style={{
-            background: "var(--color-surface)",
-            border: "1px solid var(--color-border)",
-            borderRadius: "var(--radius-lg)",
-            padding: "2rem",
-            boxShadow: "var(--shadow-sm)",
+            background: "#ffffff",
+            border: "1px solid #e5e7eb",
+            borderRadius: "14px",
+            padding: "28px",
+            boxShadow: "0 1px 4px rgba(0,0,0,0.03)",
             maxWidth: "720px",
+            marginBottom: "24px",
           }}
         >
-          <h2 style={{ fontSize: "1.25rem", fontWeight: 700, marginBottom: "1.5rem" }}>
+          <h2 style={{ fontSize: "18px", fontWeight: 700, marginBottom: "20px", color: "#111827" }}>
             Edit Booking
           </h2>
 
           {editErrors.submit && (
-            <div className="alert alert-error" style={{ marginBottom: "1rem" }}>
+            <div style={{ marginBottom: "16px", padding: "12px 16px", borderRadius: "10px", background: "#fef2f2", color: "#991b1b", fontSize: "14px", fontWeight: 500, border: "1px solid #fee2e2" }}>
               {editErrors.submit}
             </div>
           )}
 
-          <form onSubmit={handleEditSubmit} style={{ display: "flex", flexDirection: "column", gap: "1.25rem" }}>
+          <form onSubmit={handleEditSubmit} style={{ display: "flex", flexDirection: "column", gap: "20px" }}>
             
             {/* Start & End time side by side */}
-            <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "1rem" }}>
-              <div className="form-group">
-                <label htmlFor="editStartTime">Start Time</label>
+            <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "16px" }}>
+              <div style={{ display: "flex", flexDirection: "column", gap: "6px" }}>
+                <label htmlFor="editStartTime" style={{ fontSize: "13px", fontWeight: 600, color: "#374151" }}>Start Time</label>
                 <input
                   id="editStartTime"
                   name="startTime"
@@ -267,14 +299,15 @@ export default function BookingDetailPage() {
                   min={getMinDateTime()}
                   value={editForm.startTime}
                   onChange={handleEditChange}
+                  style={{ padding: "10px 12px", borderRadius: "10px", border: "1px solid #e5e7eb", fontSize: "13px", outline: "none", color: "#374151" }}
                 />
                 {editErrors.startTime && (
-                  <span className="field-error">{editErrors.startTime}</span>
+                  <span style={{ fontSize: "12px", color: "#ef4444", marginTop: "2px" }}>{editErrors.startTime}</span>
                 )}
               </div>
 
-              <div className="form-group">
-                <label htmlFor="editEndTime">End Time</label>
+              <div style={{ display: "flex", flexDirection: "column", gap: "6px" }}>
+                <label htmlFor="editEndTime" style={{ fontSize: "13px", fontWeight: 600, color: "#374151" }}>End Time</label>
                 <input
                   id="editEndTime"
                   name="endTime"
@@ -282,16 +315,17 @@ export default function BookingDetailPage() {
                   min={editForm.startTime || getMinDateTime()}
                   value={editForm.endTime}
                   onChange={handleEditChange}
+                  style={{ padding: "10px 12px", borderRadius: "10px", border: "1px solid #e5e7eb", fontSize: "13px", outline: "none", color: "#374151" }}
                 />
                 {editErrors.endTime && (
-                  <span className="field-error">{editErrors.endTime}</span>
+                  <span style={{ fontSize: "12px", color: "#ef4444", marginTop: "2px" }}>{editErrors.endTime}</span>
                 )}
               </div>
             </div>
 
             {/* Purpose */}
-            <div className="form-group">
-              <label htmlFor="editPurpose">Purpose</label>
+            <div style={{ display: "flex", flexDirection: "column", gap: "6px" }}>
+              <label htmlFor="editPurpose" style={{ fontSize: "13px", fontWeight: 600, color: "#374151" }}>Purpose</label>
               <input
                 id="editPurpose"
                 name="purpose"
@@ -299,15 +333,16 @@ export default function BookingDetailPage() {
                 placeholder="e.g. Study group session"
                 value={editForm.purpose}
                 onChange={handleEditChange}
+                style={{ padding: "10px 12px", borderRadius: "10px", border: "1px solid #e5e7eb", fontSize: "13px", outline: "none", color: "#374151" }}
               />
               {editErrors.purpose && (
-                <span className="field-error">{editErrors.purpose}</span>
+                <span style={{ fontSize: "12px", color: "#ef4444", marginTop: "2px" }}>{editErrors.purpose}</span>
               )}
             </div>
 
             {/* Expected Attendees */}
-            <div className="form-group">
-              <label htmlFor="editExpectedAttendees">Expected Attendees</label>
+            <div style={{ display: "flex", flexDirection: "column", gap: "6px" }}>
+              <label htmlFor="editExpectedAttendees" style={{ fontSize: "13px", fontWeight: 600, color: "#374151" }}>Expected Attendees</label>
               <input
                 id="editExpectedAttendees"
                 name="expectedAttendees"
@@ -316,26 +351,55 @@ export default function BookingDetailPage() {
                 placeholder="e.g. 20"
                 value={editForm.expectedAttendees}
                 onChange={handleEditChange}
+                style={{ padding: "10px 12px", borderRadius: "10px", border: "1px solid #e5e7eb", fontSize: "13px", outline: "none", color: "#374151" }}
               />
               {editErrors.expectedAttendees && (
-                <span className="field-error">{editErrors.expectedAttendees}</span>
+                <span style={{ fontSize: "12px", color: "#ef4444", marginTop: "2px" }}>{editErrors.expectedAttendees}</span>
               )}
             </div>
 
             {/* Actions */}
-            <div className="form-actions" style={{ marginTop: "0.5rem" }}>
+            <div style={{ display: "flex", gap: "10px", marginTop: "8px" }}>
               <button
                 type="submit"
-                className="btn btn-primary"
                 disabled={editLoading}
+                style={{
+                  display: "inline-flex",
+                  alignItems: "center",
+                  padding: "10px 18px",
+                  borderRadius: "10px",
+                  background: editLoading ? "#f3f4f6" : "#4f46e5",
+                  color: editLoading ? "#9ca3af" : "#fff",
+                  fontSize: "14px",
+                  fontWeight: 600,
+                  border: "none",
+                  cursor: editLoading ? "not-allowed" : "pointer",
+                  transition: "background 0.15s",
+                }}
+                onMouseEnter={(e) => { if (!editLoading) e.currentTarget.style.background = "#4338ca"; }}
+                onMouseLeave={(e) => { if (!editLoading) e.currentTarget.style.background = "#4f46e5"; }}
               >
                 {editLoading ? "Updating..." : "Update Booking"}
               </button>
               <button
                 type="button"
-                className="btn btn-outline"
                 onClick={handleCancelEdit}
                 disabled={editLoading}
+                style={{
+                  display: "inline-flex",
+                  alignItems: "center",
+                  padding: "10px 18px",
+                  borderRadius: "10px",
+                  background: "#f3f4f6",
+                  color: "#374151",
+                  fontSize: "14px",
+                  fontWeight: 600,
+                  border: "1px solid #e5e7eb",
+                  cursor: editLoading ? "not-allowed" : "pointer",
+                  transition: "background 0.15s",
+                }}
+                onMouseEnter={(e) => { if (!editLoading) e.currentTarget.style.background = "#e5e7eb"; }}
+                onMouseLeave={(e) => { if (!editLoading) e.currentTarget.style.background = "#f3f4f6"; }}
               >
                 Cancel
               </button>
@@ -347,10 +411,10 @@ export default function BookingDetailPage() {
       {/* Main card */}
       <div
         style={{
-          background: "var(--color-surface)",
-          border: "1px solid var(--color-border)",
-          borderRadius: "var(--radius-lg)",
-          boxShadow: "var(--shadow-sm)",
+          background: "#ffffff",
+          border: "1px solid #e5e7eb",
+          borderRadius: "14px",
+          boxShadow: "0 1px 4px rgba(0,0,0,0.03)",
           overflow: "hidden",
           maxWidth: "720px",
         }}
@@ -359,28 +423,28 @@ export default function BookingDetailPage() {
         <div
           style={{
             background: STATUS_STYLES[booking.status].background,
-            padding: "1.25rem 1.5rem",
+            padding: "20px 24px",
             display: "flex",
             alignItems: "center",
-            gap: "0.75rem",
-            borderBottom: "1px solid var(--color-border)",
+            gap: "12px",
+            borderBottom: "1px solid #e5e7eb",
           }}
         >
-          <span style={{ fontSize: "1.5rem" }}>
+          <span style={{ display: "flex", alignItems: "center" }}>
             {STATUS_ICONS[booking.status]}
           </span>
           <div>
-            <div style={{ fontWeight: 700, fontSize: "1.1rem", color: STATUS_STYLES[booking.status].color }}>
+            <div style={{ fontWeight: 700, fontSize: "16px", color: STATUS_STYLES[booking.status].color }}>
               {booking.status}
             </div>
-            <div style={{ fontSize: "0.85rem", color: "var(--color-text-muted)" }}>
+            <div style={{ fontSize: "13px", color: "#9ca3af" }}>
               Submitted on {formatDateTime(booking.createdAt)}
             </div>
           </div>
         </div>
 
         {/* Card body */}
-        <div style={{ padding: "1.75rem", display: "flex", flexDirection: "column", gap: "1.5rem" }}>
+        <div style={{ padding: "28px", display: "flex", flexDirection: "column", gap: "24px" }}>
 
           {/* Resource info */}
           <Section title="Resource">
@@ -431,7 +495,7 @@ function Section({ title, children }) {
           fontWeight: 700,
           textTransform: "uppercase",
           letterSpacing: "0.06em",
-          color: "var(--color-text-muted)",
+          color: "#9ca3af",
           marginBottom: "0.75rem",
         }}
       >
@@ -439,9 +503,9 @@ function Section({ title, children }) {
       </h3>
       <div
         style={{
-          background: "var(--color-bg)",
-          border: "1px solid var(--color-border)",
-          borderRadius: "var(--radius-md)",
+          background: "#f9fafb",
+          border: "1px solid #e5e7eb",
+          borderRadius: "10px",
           overflow: "hidden",
         }}
       >
@@ -459,7 +523,7 @@ function Row({ label, value, mono = false, highlight = false }) {
         alignItems: "flex-start",
         gap: "1rem",
         padding: "0.75rem 1rem",
-        borderBottom: "1px solid var(--color-border)",
+        borderBottom: "1px solid #e5e7eb",
         background: highlight ? "#fee2e2" : "transparent",
       }}
     >
@@ -467,7 +531,7 @@ function Row({ label, value, mono = false, highlight = false }) {
         style={{
           fontSize: "0.875rem",
           fontWeight: 500,
-          color: "var(--color-text-muted)",
+          color: "#9ca3af",
           width: "130px",
           flexShrink: 0,
         }}
@@ -477,7 +541,7 @@ function Row({ label, value, mono = false, highlight = false }) {
       <span
         style={{
           fontSize: "0.875rem",
-          color: highlight ? "#991b1b" : "var(--color-text)",
+          color: highlight ? "#991b1b" : "#374151",
           fontFamily: mono ? "monospace" : "inherit",
           wordBreak: "break-all",
         }}
