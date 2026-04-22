@@ -1,6 +1,24 @@
 import { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
 import { bookingsApi } from "../../api/bookingApi";
+import { 
+  FaCalendarAlt, 
+  FaCheckCircle, 
+  FaTimesCircle, 
+  FaBan, 
+  FaClock, 
+  FaUsers,
+  FaUser,
+  FaFilter, 
+  FaTimes, 
+  FaTrash, 
+  FaEye, 
+  FaEdit,
+  FaSpinner,
+  FaEnvelope,
+  FaCheck,
+  FaExclamationTriangle
+} from 'react-icons/fa';
 
 const STATUS_OPTIONS = ["ALL", "PENDING", "APPROVED", "REJECTED", "CANCELLED"];
 
@@ -208,15 +226,23 @@ export default function AdminBookingsPage() {
 
       {/* Loading */}
       {loading && (
-        <div className="loading-spinner">
-          <div className="spinner" />
+        <div style={{ 
+          display: 'flex', 
+          justifyContent: 'center', 
+          alignItems: 'center', 
+          height: '50vh',
+          flexDirection: 'column',
+          gap: '16px'
+        }}>
+          <FaSpinner size={32} color="#4f46e5" style={{ animation: 'spin 1s linear infinite' }} />
+          <p style={{ color: '#6b7280', fontSize: '16px' }}>Loading bookings...</p>
         </div>
       )}
 
       {/* Empty state */}
       {!loading && !error && bookings.length === 0 && (
         <div className="empty-state">
-          <span style={{ fontSize: "2.5rem" }}>📭</span>
+          <FaCalendarAlt size={40} />
           <h3>No bookings found</h3>
           <p>Try adjusting your filters.</p>
         </div>
@@ -268,16 +294,16 @@ export default function AdminBookingsPage() {
                     </span>
                   </div>
 
-                  <span style={{ fontSize: "0.85rem", color: "var(--color-text-muted)" }}>
-                    👤 {booking.userEmail}
+                  <span style={{ fontSize: "0.85rem", color: "#6b7280", display: 'flex', alignItems: 'center', gap: '6px' }}>
+                    <FaUser size={12} /> {booking.userEmail}
                   </span>
 
-                  <span style={{ fontSize: "0.85rem", color: "var(--color-text-muted)" }}>
-                    📅 {formatDateTime(booking.startTime)} → {formatDateTime(booking.endTime)}
+                  <span style={{ fontSize: "0.85rem", color: "#6b7280", display: 'flex', alignItems: 'center', gap: '6px' }}>
+                    <FaClock size={12} /> {formatDateTime(booking.startTime)} - {formatDateTime(booking.endTime)}
                   </span>
 
-                  <span style={{ fontSize: "0.85rem", color: "var(--color-text-muted)" }}>
-                    🎯 {booking.purpose} &nbsp;|&nbsp; 👥 {booking.expectedAttendees} attendees
+                  <span style={{ fontSize: "0.85rem", color: "#6b7280", display: 'flex', alignItems: 'center', gap: '6px' }}>
+                    <FaCalendarAlt size={12} /> {booking.purpose} | <FaUsers size={12} /> {booking.expectedAttendees} attendees
                   </span>
 
                   {booking.adminNote && (
@@ -287,11 +313,14 @@ export default function AdminBookingsPage() {
                         color: "#991b1b",
                         background: "#fee2e2",
                         padding: "0.25rem 0.6rem",
-                        borderRadius: "var(--radius-sm)",
+                        borderRadius: "6px",
                         marginTop: "0.15rem",
+                        display: 'flex',
+                        alignItems: 'center',
+                        gap: '6px'
                       }}
                     >
-                      📝 {booking.adminNote}
+                      <FaEnvelope size={12} /> {booking.adminNote}
                     </span>
                   )}
                 </div>
@@ -314,30 +343,48 @@ export default function AdminBookingsPage() {
                       disabled={actionLoading}
                       onClick={() => openApproveModal(booking.id)}
                       style={{
-                        background: "var(--color-success)",
+                        background: "#10b981",
                         color: "#fff",
                         fontSize: "0.85rem",
                         border: "none",
+                        display: 'inline-flex',
+                        alignItems: 'center',
+                        gap: '6px',
+                        padding: '6px 12px',
+                        borderRadius: '6px',
+                        cursor: 'pointer',
+                        transition: 'background 0.15s',
                       }}
+                      onMouseEnter={(e) => { e.currentTarget.style.background = '#059669'; }}
+                      onMouseLeave={(e) => { e.currentTarget.style.background = '#10b981'; }}
                     >
-                      Approve
+                      <FaCheckCircle size={12} /> Approve
                     </button>
                   )}
 
-                  {/* Reject — only for PENDING */}
+                  {/* Reject - only for PENDING */}
                   {booking.status === "PENDING" && (
                     <button
                       className="btn"
                       disabled={actionLoading}
                       onClick={() => openRejectModal(booking.id)}
                       style={{
-                        background: "var(--color-danger)",
+                        background: "#ef4444",
                         color: "#fff",
                         fontSize: "0.85rem",
                         border: "none",
+                        display: 'inline-flex',
+                        alignItems: 'center',
+                        gap: '6px',
+                        padding: '6px 12px',
+                        borderRadius: '6px',
+                        cursor: 'pointer',
+                        transition: 'background 0.15s',
                       }}
+                      onMouseEnter={(e) => { e.currentTarget.style.background = '#dc2626'; }}
+                      onMouseLeave={(e) => { e.currentTarget.style.background = '#ef4444'; }}
                     >
-                      ✗ Reject
+                      <FaTimesCircle size={12} /> Reject
                     </button>
                   )}
 
@@ -347,8 +394,23 @@ export default function AdminBookingsPage() {
                     disabled={actionLoading}
                     onClick={() => handleDelete(booking.id)}
                     title="Delete booking"
+                    style={{
+                      padding: '6px 10px',
+                      borderRadius: '6px',
+                      border: '1px solid #fee2e2',
+                      background: '#fef2f2',
+                      color: '#ef4444',
+                      cursor: 'pointer',
+                      fontSize: '12px',
+                      transition: 'background 0.15s',
+                      display: 'inline-flex',
+                      alignItems: 'center',
+                      gap: '4px'
+                    }}
+                    onMouseEnter={(e) => { e.currentTarget.style.background = '#fee2e2'; }}
+                    onMouseLeave={(e) => { e.currentTarget.style.background = '#fef2f2'; }}
                   >
-                    🗑
+                    <FaTrash size={12} />
                   </button>
 
                 </div>

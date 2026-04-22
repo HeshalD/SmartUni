@@ -1,5 +1,14 @@
 import { useState, useEffect } from "react";
 import { ticketsApi } from "../../api/ticketApi";
+import { 
+  FaSpinner, 
+  FaEdit, 
+  FaComment, 
+  FaTimes, 
+  FaCheck, 
+  FaExclamationTriangle,
+  FaTicketAlt
+} from 'react-icons/fa';
 
 const STATUS_OPTIONS = ["ALL", "OPEN", "IN_PROGRESS", "RESOLVED", "CLOSED"];
 
@@ -102,28 +111,54 @@ export default function AdminTicketsPage() {
 
   if (loading) {
     return (
-      <div className="flex items-center justify-center h-64">
-        <div className="text-gray-500">Loading tickets...</div>
+      <div style={{ 
+        display: 'flex', 
+        justifyContent: 'center', 
+        alignItems: 'center', 
+        height: '50vh',
+        flexDirection: 'column',
+        gap: '16px'
+      }}>
+        <FaSpinner size={32} color="#4f46e5" style={{ animation: 'spin 1s linear infinite' }} />
+        <p style={{ color: '#6b7280', fontSize: '16px' }}>Loading tickets...</p>
       </div>
     );
   }
 
   return (
-    <div className="p-6">
-      <div className="mb-6">
-        <h1 className="text-2xl font-bold text-gray-900 mb-4">Ticket Management</h1>
+    <div style={{ padding: '16px' }}>
+      <div style={{ marginBottom: '16px' }}>
+        <h1 style={{ fontSize: '20px', fontWeight: 'bold', color: '#111827', marginBottom: '12px', display: 'flex', alignItems: 'center', gap: '6px' }}>
+          <FaTicketAlt size={20} /> Ticket Management
+        </h1>
         
         {/* Status Filter */}
-        <div className="flex flex-wrap gap-2 mb-6">
+        <div style={{ display: 'flex', flexWrap: 'wrap', gap: '6px', marginBottom: '16px' }}>
           {STATUS_OPTIONS.map((status) => (
             <button
               key={status}
               onClick={() => setStatusFilter(status)}
-              className={`px-4 py-2 rounded-lg font-medium transition-colors ${
-                statusFilter === status
-                  ? "bg-blue-600 text-white"
-                  : "bg-gray-100 text-gray-700 hover:bg-gray-200"
-              }`}
+              style={{
+                padding: '6px 12px',
+                borderRadius: '6px',
+                fontWeight: '500',
+                fontSize: '13px',
+                border: 'none',
+                cursor: 'pointer',
+                transition: 'all 0.15s',
+                background: statusFilter === status ? '#2563eb' : '#f3f4f6',
+                color: statusFilter === status ? '#ffffff' : '#374151'
+              }}
+              onMouseEnter={(e) => {
+                if (statusFilter !== status) {
+                  e.currentTarget.style.background = '#e5e7eb';
+                }
+              }}
+              onMouseLeave={(e) => {
+                if (statusFilter !== status) {
+                  e.currentTarget.style.background = '#f3f4f6';
+                }
+              }}
             >
               {status.replace("_", " ")}
             </button>
@@ -131,108 +166,308 @@ export default function AdminTicketsPage() {
         </div>
 
         {error && (
-          <div className="mb-4 p-4 bg-red-50 border border-red-200 rounded-lg text-red-700">
-            {error}
+          <div style={{
+            marginBottom: '12px',
+            padding: '12px',
+            background: '#fef2f2',
+            border: '1px solid #fecaca',
+            borderRadius: '6px',
+            color: '#991b1b',
+            display: 'flex',
+            alignItems: 'center',
+            gap: '6px'
+          }}>
+            <FaExclamationTriangle size={14} /> {error}
           </div>
         )}
 
         {/* Tickets Table */}
-        <div className="bg-white rounded-lg shadow overflow-hidden">
-          <div className="overflow-x-auto">
-            <table className="min-w-full divide-y divide-gray-200">
-              <thead className="bg-gray-50">
-                <tr>
-                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+        <div style={{
+          background: '#ffffff',
+          borderRadius: '8px',
+          boxShadow: '0 1px 3px 0 rgba(0, 0, 0, 0.1)',
+          overflow: 'hidden'
+        }}>
+          <div style={{ overflowX: 'auto' }}>
+            <table style={{
+              minWidth: '100%',
+              borderCollapse: 'collapse',
+              border: 'none'
+            }}>
+              <thead>
+                <tr style={{ background: '#f9fafb' }}>
+                  <th style={{
+                    padding: '8px 12px',
+                    textAlign: 'left',
+                    fontSize: '11px',
+                    fontWeight: '500',
+                    color: '#6b7280',
+                    textTransform: 'uppercase',
+                    letterSpacing: '0.05em',
+                    borderBottom: '1px solid #e5e7eb'
+                  }}>
                     ID
                   </th>
-                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                  <th style={{
+                    padding: '8px 12px',
+                    textAlign: 'left',
+                    fontSize: '11px',
+                    fontWeight: '500',
+                    color: '#6b7280',
+                    textTransform: 'uppercase',
+                    letterSpacing: '0.05em',
+                    borderBottom: '1px solid #e5e7eb'
+                  }}>
                     Title
                   </th>
-                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                  <th style={{
+                    padding: '8px 12px',
+                    textAlign: 'left',
+                    fontSize: '11px',
+                    fontWeight: '500',
+                    color: '#6b7280',
+                    textTransform: 'uppercase',
+                    letterSpacing: '0.05em',
+                    borderBottom: '1px solid #e5e7eb'
+                  }}>
                     Reporter
                   </th>
-                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                  <th style={{
+                    padding: '8px 12px',
+                    textAlign: 'left',
+                    fontSize: '11px',
+                    fontWeight: '500',
+                    color: '#6b7280',
+                    textTransform: 'uppercase',
+                    letterSpacing: '0.05em',
+                    borderBottom: '1px solid #e5e7eb'
+                  }}>
                     Category
                   </th>
-                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                  <th style={{
+                    padding: '8px 12px',
+                    textAlign: 'left',
+                    fontSize: '11px',
+                    fontWeight: '500',
+                    color: '#6b7280',
+                    textTransform: 'uppercase',
+                    letterSpacing: '0.05em',
+                    borderBottom: '1px solid #e5e7eb'
+                  }}>
                     Priority
                   </th>
-                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                  <th style={{
+                    padding: '8px 12px',
+                    textAlign: 'left',
+                    fontSize: '11px',
+                    fontWeight: '500',
+                    color: '#6b7280',
+                    textTransform: 'uppercase',
+                    letterSpacing: '0.05em',
+                    borderBottom: '1px solid #e5e7eb'
+                  }}>
                     Status
                   </th>
-                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                  <th style={{
+                    padding: '8px 12px',
+                    textAlign: 'left',
+                    fontSize: '11px',
+                    fontWeight: '500',
+                    color: '#6b7280',
+                    textTransform: 'uppercase',
+                    letterSpacing: '0.05em',
+                    borderBottom: '1px solid #e5e7eb'
+                  }}>
                     Created
                   </th>
-                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                  <th style={{
+                    padding: '8px 12px',
+                    textAlign: 'left',
+                    fontSize: '11px',
+                    fontWeight: '500',
+                    color: '#6b7280',
+                    textTransform: 'uppercase',
+                    letterSpacing: '0.05em',
+                    borderBottom: '1px solid #e5e7eb'
+                  }}>
                     Actions
                   </th>
                 </tr>
               </thead>
-              <tbody className="bg-white divide-y divide-gray-200">
+              <tbody style={{ background: '#ffffff' }}>
                 {tickets.length === 0 ? (
                   <tr>
-                    <td colSpan="8" className="px-6 py-12 text-center text-gray-500">
-                      No tickets found
+                    <td colSpan="8" style={{
+                      padding: '32px 12px',
+                      textAlign: 'center',
+                      color: '#6b7280',
+                      fontSize: '14px',
+                      display: 'flex',
+                      alignItems: 'center',
+                      justifyContent: 'center',
+                      gap: '6px'
+                    }}>
+                      <FaTicketAlt size={20} /> No tickets found
                     </td>
                   </tr>
                 ) : (
                   tickets.map((ticket) => (
-                    <tr key={ticket.id} className="hover:bg-gray-50">
-                      <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">
+                    <tr 
+                      key={ticket.id} 
+                      style={{
+                        borderBottom: '1px solid #e5e7eb',
+                        transition: 'background 0.15s'
+                      }}
+                      onMouseEnter={(e) => e.currentTarget.style.background = '#f9fafb'}
+                      onMouseLeave={(e) => e.currentTarget.style.background = '#ffffff'}
+                    >
+                      <td style={{
+                        padding: '10px 12px',
+                        whiteSpace: 'nowrap',
+                        fontSize: '13px',
+                        fontWeight: '500',
+                        color: '#111827'
+                      }}>
                         #{ticket.id}
                       </td>
-                      <td className="px-6 py-4">
-                        <div className="text-sm font-medium text-gray-900">
+                      <td style={{ padding: '10px 12px' }}>
+                        <div style={{
+                          fontSize: '13px',
+                          fontWeight: '500',
+                          color: '#111827',
+                          marginBottom: '2px'
+                        }}>
                           {ticket.title}
                         </div>
-                        <div className="text-sm text-gray-500 truncate max-w-xs">
+                        <div style={{
+                          fontSize: '12px',
+                          color: '#6b7280',
+                          maxWidth: '180px',
+                          overflow: 'hidden',
+                          textOverflow: 'ellipsis',
+                          whiteSpace: 'nowrap'
+                        }}>
                           {ticket.description}
                         </div>
                       </td>
-                      <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
+                      <td style={{
+                        padding: '10px 12px',
+                        whiteSpace: 'nowrap',
+                        fontSize: '13px',
+                        color: '#111827'
+                      }}>
                         {ticket.reporterName}
                       </td>
-                      <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
+                      <td style={{
+                        padding: '10px 12px',
+                        whiteSpace: 'nowrap',
+                        fontSize: '13px',
+                        color: '#111827'
+                      }}>
                         {ticket.category}
                       </td>
-                      <td className="px-6 py-4 whitespace-nowrap">
+                      <td style={{
+                        padding: '10px 12px',
+                        whiteSpace: 'nowrap'
+                      }}>
                         <span
-                          className={`inline-flex px-2 py-1 text-xs font-semibold rounded-full ${
-                            PRIORITY_STYLES[ticket.priority]?.background || "bg-gray-100"
-                          } ${
-                            PRIORITY_STYLES[ticket.priority]?.color || "text-gray-800"
-                          }`}
+                          style={{
+                            display: 'inline-flex',
+                            padding: '3px 6px',
+                            fontSize: '11px',
+                            fontWeight: '600',
+                            borderRadius: '999px',
+                            background: PRIORITY_STYLES[ticket.priority]?.background || "#f3f4f6",
+                            color: PRIORITY_STYLES[ticket.priority]?.color || "#374151"
+                          }}
                         >
                           {ticket.priority}
                         </span>
                       </td>
-                      <td className="px-6 py-4 whitespace-nowrap">
+                      <td style={{
+                        padding: '10px 12px',
+                        whiteSpace: 'nowrap'
+                      }}>
                         <span
-                          className={`inline-flex px-2 py-1 text-xs font-semibold rounded-full ${
-                            STATUS_STYLES[ticket.status]?.background || "bg-gray-100"
-                          } ${
-                            STATUS_STYLES[ticket.status]?.color || "text-gray-800"
-                          }`}
+                          style={{
+                            display: 'inline-flex',
+                            padding: '3px 6px',
+                            fontSize: '11px',
+                            fontWeight: '600',
+                            borderRadius: '999px',
+                            background: STATUS_STYLES[ticket.status]?.background || "#f3f4f6",
+                            color: STATUS_STYLES[ticket.status]?.color || "#374151"
+                          }}
                         >
                           {ticket.status.replace("_", " ")}
                         </span>
                       </td>
-                      <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                      <td style={{
+                        padding: '10px 12px',
+                        whiteSpace: 'nowrap',
+                        fontSize: '12px',
+                        color: '#6b7280'
+                      }}>
                         {formatDate(ticket.createdAt)}
                       </td>
-                      <td className="px-6 py-4 whitespace-nowrap text-sm font-medium">
-                        <div className="flex space-x-2">
+                      <td style={{
+                        padding: '10px 12px',
+                        whiteSpace: 'nowrap',
+                        fontSize: '13px',
+                        fontWeight: '500'
+                      }}>
+                        <div style={{ display: 'flex', gap: '6px' }}>
                           <button
                             onClick={() => openUpdateModal(ticket)}
-                            className="text-blue-600 hover:text-blue-900"
+                            style={{
+                              padding: '4px 8px',
+                              borderRadius: '4px',
+                              border: '1px solid #dbeafe',
+                              background: '#eff6ff',
+                              color: '#2563eb',
+                              cursor: 'pointer',
+                              fontSize: '11px',
+                              display: 'inline-flex',
+                              alignItems: 'center',
+                              gap: '3px',
+                              transition: 'all 0.15s'
+                            }}
+                            onMouseEnter={(e) => {
+                              e.currentTarget.style.background = '#dbeafe';
+                              e.currentTarget.style.borderColor = '#93c5fd';
+                            }}
+                            onMouseLeave={(e) => {
+                              e.currentTarget.style.background = '#eff6ff';
+                              e.currentTarget.style.borderColor = '#dbeafe';
+                            }}
                           >
-                            Update
+                            <FaEdit size={10} /> Update
                           </button>
                           <button
                             onClick={() => openCommentModal(ticket)}
-                            className="text-green-600 hover:text-green-900"
+                            style={{
+                              padding: '4px 8px',
+                              borderRadius: '4px',
+                              border: '1px solid #d1fae5',
+                              background: '#ecfdf5',
+                              color: '#059669',
+                              cursor: 'pointer',
+                              fontSize: '11px',
+                              display: 'inline-flex',
+                              alignItems: 'center',
+                              gap: '3px',
+                              transition: 'all 0.15s'
+                            }}
+                            onMouseEnter={(e) => {
+                              e.currentTarget.style.background = '#d1fae5';
+                              e.currentTarget.style.borderColor = '#6ee7b7';
+                            }}
+                            onMouseLeave={(e) => {
+                              e.currentTarget.style.background = '#ecfdf5';
+                              e.currentTarget.style.borderColor = '#d1fae5';
+                            }}
                           >
-                            Comment
+                            <FaComment size={10} /> Comment
                           </button>
                         </div>
                       </td>
@@ -247,27 +482,70 @@ export default function AdminTicketsPage() {
 
       {/* Update Ticket Modal */}
       {showUpdateModal && selectedTicket && (
-        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
-          <div className="bg-white rounded-lg p-6 w-full max-w-md">
-            <h2 className="text-lg font-semibold mb-4">Update Ticket Status</h2>
+        <>
+          {/* Backdrop */}
+          <div
+            onClick={() => {
+              setShowUpdateModal(false);
+              setSelectedTicket(null);
+              setUpdateStatus("");
+            }}
+            style={{
+              position: 'fixed',
+              inset: 0,
+              background: 'rgba(0,0,0,0.5)',
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'center',
+              zIndex: 50
+            }}
+          />
+          
+          {/* Modal */}
+          <div style={{
+            position: 'fixed',
+            top: '50%',
+            left: '50%',
+            transform: 'translate(-50%, -50%)',
+            background: '#ffffff',
+            borderRadius: '6px',
+            padding: '16px',
+            width: '100%',
+            maxWidth: '380px',
+            zIndex: 60,
+            boxShadow: '0 10px 25px rgba(0,0,0,0.1)'
+          }}>
+            <h2 style={{ fontSize: '16px', fontWeight: '600', marginBottom: '12px', display: 'flex', alignItems: 'center', gap: '6px' }}>
+              <FaEdit size={16} /> Update Ticket Status
+            </h2>
             
-            <div className="mb-4">
-              <p className="text-sm text-gray-600 mb-2">
-                Ticket: <span className="font-medium">#{selectedTicket.id} - {selectedTicket.title}</span>
+            <div style={{ marginBottom: '12px' }}>
+              <p style={{ fontSize: '13px', color: '#6b7280', marginBottom: '6px' }}>
+                Ticket: <span style={{ fontWeight: '500' }}>#{selectedTicket.id} - {selectedTicket.title}</span>
               </p>
-              <p className="text-sm text-gray-600 mb-4">
-                Current Status: <span className="font-medium">{selectedTicket.status.replace("_", " ")}</span>
+              <p style={{ fontSize: '13px', color: '#6b7280', marginBottom: '12px' }}>
+                Current Status: <span style={{ fontWeight: '500' }}>{selectedTicket.status.replace("_", " ")}</span>
               </p>
             </div>
 
-            <div className="mb-4">
-              <label className="block text-sm font-medium text-gray-700 mb-2">
+            <div style={{ marginBottom: '12px' }}>
+              <label style={{ display: 'block', fontSize: '13px', fontWeight: '500', color: '#374151', marginBottom: '6px' }}>
                 New Status
               </label>
               <select
                 value={updateStatus}
                 onChange={(e) => setUpdateStatus(e.target.value)}
-                className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+                style={{
+                  width: '100%',
+                  padding: '8px',
+                  border: '1px solid #d1d5db',
+                  borderRadius: '6px',
+                  fontSize: '13px',
+                  outline: 'none',
+                  transition: 'border-color 0.15s'
+                }}
+                onFocus={(e) => e.currentTarget.style.borderColor = '#2563eb'}
+                onBlur={(e) => e.currentTarget.style.borderColor = '#d1d5db'}
               >
                 <option value="">Select status</option>
                 <option value="OPEN">Open</option>
@@ -277,75 +555,194 @@ export default function AdminTicketsPage() {
               </select>
             </div>
 
-            <div className="flex justify-end space-x-3">
+            <div style={{ display: 'flex', justifyContent: 'flex-end', gap: '8px' }}>
               <button
                 onClick={() => {
                   setShowUpdateModal(false);
                   setSelectedTicket(null);
                   setUpdateStatus("");
                 }}
-                className="px-4 py-2 text-gray-700 bg-gray-100 rounded-lg hover:bg-gray-200"
+                style={{
+                  padding: '6px 12px',
+                  color: '#374151',
+                  background: '#f3f4f6',
+                  borderRadius: '6px',
+                  border: 'none',
+                  cursor: 'pointer',
+                  fontSize: '13px',
+                  display: 'inline-flex',
+                  alignItems: 'center',
+                  gap: '4px',
+                  transition: 'background 0.15s'
+                }}
+                onMouseEnter={(e) => e.currentTarget.style.background = '#e5e7eb'}
+                onMouseLeave={(e) => e.currentTarget.style.background = '#f3f4f6'}
               >
-                Cancel
+                <FaTimes size={12} /> Cancel
               </button>
               <button
                 onClick={handleUpdateTicket}
                 disabled={!updateStatus || isSubmitting}
-                className="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 disabled:opacity-50"
+                style={{
+                  padding: '6px 12px',
+                  background: '#2563eb',
+                  color: '#ffffff',
+                  borderRadius: '6px',
+                  border: 'none',
+                  cursor: 'pointer',
+                  fontSize: '13px',
+                  display: 'inline-flex',
+                  alignItems: 'center',
+                  gap: '4px',
+                  transition: 'background 0.15s',
+                  opacity: (!updateStatus || isSubmitting) ? 0.5 : 1
+                }}
+                onMouseEnter={(e) => {
+                  if (updateStatus && !isSubmitting) {
+                    e.currentTarget.style.background = '#1d4ed8';
+                  }
+                }}
+                onMouseLeave={(e) => {
+                  if (updateStatus && !isSubmitting) {
+                    e.currentTarget.style.background = '#2563eb';
+                  }
+                }}
               >
-                {isSubmitting ? "Updating..." : "Update"}
+                {isSubmitting ? <><FaSpinner size={12} style={{ animation: 'spin 1s linear infinite' }} /> Updating...</> : <><FaCheck size={12} /> Update</>}
               </button>
             </div>
           </div>
-        </div>
+        </>
       )}
 
       {/* Add Comment Modal */}
       {showCommentModal && selectedTicket && (
-        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
-          <div className="bg-white rounded-lg p-6 w-full max-w-md">
-            <h2 className="text-lg font-semibold mb-4">Add Comment</h2>
+        <>
+          {/* Backdrop */}
+          <div
+            onClick={() => {
+              setShowCommentModal(false);
+              setSelectedTicket(null);
+              setComment("");
+            }}
+            style={{
+              position: 'fixed',
+              inset: 0,
+              background: 'rgba(0,0,0,0.5)',
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'center',
+              zIndex: 50
+            }}
+          />
+          
+          {/* Modal */}
+          <div style={{
+            position: 'fixed',
+            top: '50%',
+            left: '50%',
+            transform: 'translate(-50%, -50%)',
+            background: '#ffffff',
+            borderRadius: '6px',
+            padding: '16px',
+            width: '100%',
+            maxWidth: '380px',
+            zIndex: 60,
+            boxShadow: '0 10px 25px rgba(0,0,0,0.1)'
+          }}>
+            <h2 style={{ fontSize: '16px', fontWeight: '600', marginBottom: '12px', display: 'flex', alignItems: 'center', gap: '6px' }}>
+              <FaComment size={16} /> Add Comment
+            </h2>
             
-            <div className="mb-4">
-              <p className="text-sm text-gray-600 mb-4">
-                Ticket: <span className="font-medium">#{selectedTicket.id} - {selectedTicket.title}</span>
+            <div style={{ marginBottom: '12px' }}>
+              <p style={{ fontSize: '13px', color: '#6b7280', marginBottom: '12px' }}>
+                Ticket: <span style={{ fontWeight: '500' }}>#{selectedTicket.id} - {selectedTicket.title}</span>
               </p>
             </div>
 
-            <div className="mb-4">
-              <label className="block text-sm font-medium text-gray-700 mb-2">
+            <div style={{ marginBottom: '12px' }}>
+              <label style={{ display: 'block', fontSize: '13px', fontWeight: '500', color: '#374151', marginBottom: '6px' }}>
                 Comment
               </label>
               <textarea
                 value={comment}
                 onChange={(e) => setComment(e.target.value)}
-                rows={4}
-                className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+                rows={3}
+                style={{
+                  width: '100%',
+                  padding: '8px',
+                  border: '1px solid #d1d5db',
+                  borderRadius: '6px',
+                  fontSize: '13px',
+                  outline: 'none',
+                  transition: 'border-color 0.15s',
+                  resize: 'vertical',
+                  minHeight: '80px'
+                }}
+                onFocus={(e) => e.currentTarget.style.borderColor = '#2563eb'}
+                onBlur={(e) => e.currentTarget.style.borderColor = '#d1d5db'}
                 placeholder="Enter your comment..."
               />
             </div>
 
-            <div className="flex justify-end space-x-3">
+            <div style={{ display: 'flex', justifyContent: 'flex-end', gap: '8px' }}>
               <button
                 onClick={() => {
                   setShowCommentModal(false);
                   setSelectedTicket(null);
                   setComment("");
                 }}
-                className="px-4 py-2 text-gray-700 bg-gray-100 rounded-lg hover:bg-gray-200"
+                style={{
+                  padding: '6px 12px',
+                  color: '#374151',
+                  background: '#f3f4f6',
+                  borderRadius: '6px',
+                  border: 'none',
+                  cursor: 'pointer',
+                  fontSize: '13px',
+                  display: 'inline-flex',
+                  alignItems: 'center',
+                  gap: '4px',
+                  transition: 'background 0.15s'
+                }}
+                onMouseEnter={(e) => e.currentTarget.style.background = '#e5e7eb'}
+                onMouseLeave={(e) => e.currentTarget.style.background = '#f3f4f6'}
               >
-                Cancel
+                <FaTimes size={12} /> Cancel
               </button>
               <button
                 onClick={handleAddComment}
                 disabled={!comment.trim() || isSubmitting}
-                className="px-4 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700 disabled:opacity-50"
+                style={{
+                  padding: '6px 12px',
+                  background: '#059669',
+                  color: '#ffffff',
+                  borderRadius: '6px',
+                  border: 'none',
+                  cursor: 'pointer',
+                  fontSize: '13px',
+                  display: 'inline-flex',
+                  alignItems: 'center',
+                  gap: '4px',
+                  transition: 'background 0.15s',
+                  opacity: (!comment.trim() || isSubmitting) ? 0.5 : 1
+                }}
+                onMouseEnter={(e) => {
+                  if (comment.trim() && !isSubmitting) {
+                    e.currentTarget.style.background = '#047857';
+                  }
+                }}
+                onMouseLeave={(e) => {
+                  if (comment.trim() && !isSubmitting) {
+                    e.currentTarget.style.background = '#059669';
+                  }
+                }}
               >
-                {isSubmitting ? "Adding..." : "Add Comment"}
+                {isSubmitting ? <><FaSpinner size={12} style={{ animation: 'spin 1s linear infinite' }} /> Adding...</> : <><FaCheck size={12} /> Add Comment</>}
               </button>
             </div>
           </div>
-        </div>
+        </>
       )}
     </div>
   );

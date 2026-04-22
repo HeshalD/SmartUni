@@ -67,6 +67,13 @@ public class NotificationService {
                 .map(this::toResponse);
     }
 
+    public Page<NotificationResponse> getAllNotifications(int page, int size) {
+        Pageable pageable = PageRequest.of(page, size);
+        return notificationRepository
+                .findAllByOrderByCreatedAtDesc(pageable)
+                .map(this::toResponse);
+    }
+
     public long getUnreadCount(String userId) {
         return notificationRepository.countByRecipientIdAndReadFalse(userId);
     }

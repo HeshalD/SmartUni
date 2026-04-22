@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import { useAuth } from '../../context/AuthContext';
 import { authApi } from '../../api/authApi';
+import { FaUser, FaEnvelope, FaCalendar, FaEdit, FaSave, FaTimes, FaCamera, FaShieldAlt, FaClock, FaCheckCircle, FaTimesCircle } from 'react-icons/fa';
 
 export default function ProfilePage() {
   const { user, refreshUser } = useAuth();
@@ -51,32 +52,120 @@ export default function ProfilePage() {
     : '?';
 
   return (
-    <div className="page-container" style={{ maxWidth: '600px' }}>
-      <div className="page-header">
-        <h1 className="page-title">My Profile</h1>
+    <div style={{ padding: '28px', maxWidth: '800px', margin: '0 auto' }}>
+      
+      {/* Header */}
+      <div style={{ marginBottom: '32px' }}>
+        <h1 style={{ fontSize: '28px', fontWeight: 800, color: '#111827', margin: 0, display: 'flex', alignItems: 'center', gap: '12px' }}>
+          <FaUser size={28} color="#4f46e5" />
+          My Profile
+        </h1>
+        <p style={{ fontSize: '16px', color: '#6b7280', margin: '8px 0 0 0' }}>
+          Manage your personal information and account settings
+        </p>
       </div>
 
-      {success && <div className="alert alert-success">Profile updated successfully.</div>}
-      {error   && <div className="alert alert-error">{error}</div>}
+      {/* Success/Error Messages */}
+      {success && (
+        <div style={{ marginBottom: '20px', padding: '16px 20px', borderRadius: '12px', background: '#d1fae5', color: '#065f46', fontSize: '14px', fontWeight: 600, border: '1px solid #6ee7b7', display: 'flex', alignItems: 'center', gap: '8px' }}>
+          <FaCheckCircle size={16} />
+          Profile updated successfully.
+        </div>
+      )}
+      {error && (
+        <div style={{ marginBottom: '20px', padding: '16px 20px', borderRadius: '12px', background: '#fef2f2', color: '#991b1b', fontSize: '14px', fontWeight: 600, border: '1px solid #fee2e2', display: 'flex', alignItems: 'center', gap: '8px' }}>
+          <FaTimesCircle size={16} />
+          {error}
+        </div>
+      )}
 
-      <div className="profile-card">
-        {/* Avatar */}
-        <div className="profile-avatar-row">
-          {user.profilePictureUrl ? (
-            <img
-              src={user.profilePictureUrl}
-              alt={user.name}
-              className="profile-avatar"
-            />
-          ) : (
-            <div className="profile-avatar profile-avatar--initials">{initials}</div>
-          )}
-          <div>
-            <h2 className="profile-name">{user.name}</h2>
-            <p className="profile-email">{user.email}</p>
-            <div className="role-badges">
+      {/* Profile Card */}
+      <div style={{
+        background: '#fff',
+        border: '1px solid #e5e7eb',
+        borderRadius: '16px',
+        padding: '32px',
+        boxShadow: '0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06)',
+      }}>
+        
+        {/* Avatar Section */}
+        <div style={{ display: 'flex', alignItems: 'flex-start', gap: '24px', marginBottom: '32px', flexWrap: 'wrap' }}>
+          <div style={{ position: 'relative' }}>
+            {user.profilePictureUrl ? (
+              <img
+                src={user.profilePictureUrl}
+                alt={user.name}
+                style={{
+                  width: '120px',
+                  height: '120px',
+                  borderRadius: '50%',
+                  objectFit: 'cover',
+                  border: '4px solid #e5e7eb',
+                }}
+              />
+            ) : (
+              <div style={{
+                width: '120px',
+                height: '120px',
+                borderRadius: '50%',
+                background: 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)',
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'center',
+                fontSize: '36px',
+                fontWeight: 700,
+                color: '#fff',
+                border: '4px solid #e5e7eb',
+              }}>
+                {initials}
+              </div>
+            )}
+            {editing && (
+              <div style={{
+                position: 'absolute',
+                bottom: '4px',
+                right: '4px',
+                width: '32px',
+                height: '32px',
+                borderRadius: '50%',
+                background: '#4f46e5',
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'center',
+                border: '3px solid #fff',
+                cursor: 'pointer',
+                transition: 'background 0.15s',
+              }}
+              onMouseEnter={(e) => { e.currentTarget.style.background = '#4338ca'; }}
+              onMouseLeave={(e) => { e.currentTarget.style.background = '#4f46e5'; }}
+            >
+                <FaCamera size={14} color="#fff" />
+              </div>
+            )}
+          </div>
+          
+          <div style={{ flex: 1, minWidth: '250px' }}>
+            <h2 style={{ fontSize: '24px', fontWeight: 700, color: '#111827', margin: '0 0 8px 0' }}>
+              {user.name}
+            </h2>
+            <div style={{ display: 'flex', alignItems: 'center', gap: '8px', marginBottom: '12px', color: '#6b7280', fontSize: '16px' }}>
+              <FaEnvelope size={14} />
+              {user.email}
+            </div>
+            <div style={{ display: 'flex', gap: '8px', flexWrap: 'wrap', marginBottom: '16px' }}>
               {user.roles?.map((role) => (
-                <span key={role} className={`role-badge role-badge--${role.toLowerCase()}`}>
+                <span
+                  key={role}
+                  style={{
+                    background: role === 'ADMIN' ? '#fef3c7' : role === 'TECHNICIAN' ? '#dbeafe' : '#e0e7ff',
+                    color: role === 'ADMIN' ? '#92400e' : role === 'TECHNICIAN' ? '#1e40af' : '#3730a3',
+                    fontSize: '12px',
+                    fontWeight: 700,
+                    padding: '4px 12px',
+                    borderRadius: '999px',
+                    textTransform: 'uppercase',
+                  }}
+                >
                   {role}
                 </span>
               ))}
@@ -84,50 +173,155 @@ export default function ProfilePage() {
           </div>
         </div>
 
-        <div className="profile-meta">
-          <div className="profile-meta__row">
-            <span className="profile-meta__label">Provider</span>
-            <span className="profile-meta__value">{user.provider || 'LOCAL'}</span>
+        {/* Meta Information */}
+        <div style={{
+          display: 'grid',
+          gridTemplateColumns: 'repeat(auto-fit, minmax(200px, 1fr))',
+          gap: '20px',
+          padding: '20px 0',
+          borderTop: '1px solid #e5e7eb',
+          borderBottom: '1px solid #e5e7eb',
+          marginBottom: '24px',
+        }}>
+          <div>
+            <div style={{ display: 'flex', alignItems: 'center', gap: '8px', marginBottom: '4px', color: '#6b7280', fontSize: '14px', fontWeight: 600 }}>
+              <FaShieldAlt size={12} />
+              Provider
+            </div>
+            <div style={{ fontSize: '16px', fontWeight: 500, color: '#111827' }}>
+              {user.provider || 'LOCAL'}
+            </div>
           </div>
-          <div className="profile-meta__row">
-            <span className="profile-meta__label">Member since</span>
-            <span className="profile-meta__value">
-              {user.createdAt
-                ? new Date(user.createdAt).toLocaleDateString()
-                : '—'}
-            </span>
+          <div>
+            <div style={{ display: 'flex', alignItems: 'center', gap: '8px', marginBottom: '4px', color: '#6b7280', fontSize: '14px', fontWeight: 600 }}>
+              <FaCalendar size={12} />
+              Member since
+            </div>
+            <div style={{ fontSize: '16px', fontWeight: 500, color: '#111827' }}>
+              {user.createdAt ? new Date(user.createdAt).toLocaleDateString() : 'N/A'}
+            </div>
           </div>
         </div>
 
+        {/* Edit/Form Section */}
         {!editing ? (
-          <button className="btn btn-primary" onClick={startEdit}>
-            Edit profile
+          <button
+            style={{
+              display: 'inline-flex',
+              alignItems: 'center',
+              gap: '8px',
+              padding: '12px 24px',
+              borderRadius: '10px',
+              background: '#4f46e5',
+              color: '#fff',
+              fontSize: '14px',
+              fontWeight: 600,
+              border: 'none',
+              cursor: 'pointer',
+              transition: 'background 0.15s',
+            }}
+            onMouseEnter={(e) => { e.currentTarget.style.background = '#4338ca'; }}
+            onMouseLeave={(e) => { e.currentTarget.style.background = '#4f46e5'; }}
+            onClick={startEdit}
+          >
+            <FaEdit size={14} />
+            Edit Profile
           </button>
         ) : (
-          <form onSubmit={handleSave} className="profile-form">
-            <div className="form-group">
-              <label htmlFor="name">Full name</label>
+          <form onSubmit={handleSave} style={{ display: 'flex', flexDirection: 'column', gap: '20px' }}>
+            <div>
+              <label style={{ display: 'block', fontSize: '14px', fontWeight: 600, color: '#374151', marginBottom: '8px' }}>
+                Full name
+              </label>
               <input
-                id="name" name="name" type="text"
-                value={form.name} onChange={handleChange}
+                name="name"
+                type="text"
+                value={form.name}
+                onChange={handleChange}
                 placeholder="Your name"
+                style={{
+                  width: '100%',
+                  padding: '12px 16px',
+                  border: '1px solid #e5e7eb',
+                  borderRadius: '10px',
+                  fontSize: '14px',
+                  outline: 'none',
+                  transition: 'border-color 0.15s',
+                }}
+                onFocus={(e) => { e.currentTarget.style.borderColor = '#4f46e5'; }}
+                onBlur={(e) => { e.currentTarget.style.borderColor = '#e5e7eb'; }}
               />
             </div>
 
-            <div className="form-group">
-              <label htmlFor="profilePictureUrl">Profile picture URL</label>
+            <div>
+              <label style={{ display: 'block', fontSize: '14px', fontWeight: 600, color: '#374151', marginBottom: '8px' }}>
+                Profile picture URL
+              </label>
               <input
-                id="profilePictureUrl" name="profilePictureUrl" type="url"
-                value={form.profilePictureUrl} onChange={handleChange}
+                name="profilePictureUrl"
+                type="url"
+                value={form.profilePictureUrl}
+                onChange={handleChange}
                 placeholder="https://example.com/photo.jpg"
+                style={{
+                  width: '100%',
+                  padding: '12px 16px',
+                  border: '1px solid #e5e7eb',
+                  borderRadius: '10px',
+                  fontSize: '14px',
+                  outline: 'none',
+                  transition: 'border-color 0.15s',
+                }}
+                onFocus={(e) => { e.currentTarget.style.borderColor = '#4f46e5'; }}
+                onBlur={(e) => { e.currentTarget.style.borderColor = '#e5e7eb'; }}
               />
             </div>
 
-            <div className="form-actions">
-              <button type="submit" className="btn btn-primary" disabled={saving}>
-                {saving ? 'Saving…' : 'Save changes'}
+            <div style={{ display: 'flex', gap: '12px', justifyContent: 'flex-end' }}>
+              <button
+                type="submit"
+                disabled={saving}
+                style={{
+                  display: 'inline-flex',
+                  alignItems: 'center',
+                  gap: '8px',
+                  padding: '12px 24px',
+                  borderRadius: '10px',
+                  background: saving ? '#f3f4f6' : '#4f46e5',
+                  color: saving ? '#9ca3af' : '#fff',
+                  fontSize: '14px',
+                  fontWeight: 600,
+                  border: 'none',
+                  cursor: saving ? 'not-allowed' : 'pointer',
+                  transition: 'background 0.15s',
+                }}
+                onMouseEnter={(e) => { if (!saving) e.currentTarget.style.background = '#4338ca'; }}
+                onMouseLeave={(e) => { if (!saving) e.currentTarget.style.background = '#4f46e5'; }}
+              >
+                <FaSave size={14} />
+                {saving ? 'Saving...' : 'Save Changes'}
               </button>
-              <button type="button" className="btn btn-outline" onClick={cancelEdit}>
+              <button
+                type="button"
+                onClick={cancelEdit}
+                style={{
+                  display: 'inline-flex',
+                  alignItems: 'center',
+                  gap: '8px',
+                  padding: '12px 24px',
+                  borderRadius: '10px',
+                  border: '1px solid #e5e7eb',
+                  background: '#ffffff',
+                  color: '#374151',
+                  fontSize: '14px',
+                  fontWeight: 600,
+                  cursor: 'pointer',
+                  transition: 'background 0.15s',
+                }}
+                onMouseEnter={(e) => { e.currentTarget.style.background = '#f3f4f6'; }}
+                onMouseLeave={(e) => { e.currentTarget.style.background = '#ffffff'; }}
+              >
+                <FaTimes size={14} />
                 Cancel
               </button>
             </div>

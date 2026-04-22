@@ -18,6 +18,15 @@ public class NotificationController {
 
     private final NotificationService notificationService;
 
+    // GET /api/notifications/all  (admin – all users)
+    @GetMapping("/all")
+    @org.springframework.security.access.prepost.PreAuthorize("hasRole('ADMIN')")
+    public ResponseEntity<Page<NotificationResponse>> getAllNotifications(
+            @RequestParam(defaultValue = "0") int page,
+            @RequestParam(defaultValue = "20") int size) {
+        return ResponseEntity.ok(notificationService.getAllNotifications(page, size));
+    }
+
     // GET /api/notifications?page=0&size=20
     @GetMapping
     public ResponseEntity<Page<NotificationResponse>> getNotifications(

@@ -32,6 +32,9 @@ import BookingDetailPage from './pages/bookings/BookingDetails';
 //Admin pages
 import AdminBookingsPage from './pages/admin/AdminBookingsPage';
 import AdminTicketsPage from './pages/admin/AdminTicketsPage';
+import AdminResourcesPage from './pages/admin/AdminResourcesPage';
+import AdminNotificationsPage from './pages/admin/AdminNotificationsPage';
+import AdminUsersPage from './pages/admin/AdminUsersPage';
 
 // Tickets pages
 import TicketsPage       from './pages/tickets/TicketsPage';
@@ -98,6 +101,9 @@ export default function App() {
                 <Route path="/admin" element={<AdminPage />} />
                 <Route path="/admin/bookings" element={<AdminBookingsPage />} />
                 <Route path="/admin/tickets" element={<AdminTicketsPage />} />
+                <Route path="/admin/resources" element={<AdminResourcesPage />} />
+                <Route path="/admin/notifications" element={<AdminNotificationsPage />} />
+                <Route path="/admin/users" element={<AdminUsersPage />} />
               </Route>
             </Route>
           </Route>

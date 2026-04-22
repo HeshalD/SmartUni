@@ -3,10 +3,25 @@ import AdminSidebar from './AdminSidebar';
 
 export default function AdminLayout() {
   return (
-    <div className="app-shell">
+    <div style={{
+      minHeight: '100vh',
+      background: '#f8fafc',
+      display: 'flex',
+    }}>
       <AdminSidebar />
-      <div className="app-shell__content">
-        <main className="app-main">
+      <div style={{
+        flex: 1,
+        marginLeft: '280px',
+        display: 'flex',
+        flexDirection: 'column',
+        minHeight: '100vh',
+      }}>
+        <main style={{
+          flex: 1,
+          padding: '0',
+          background: '#f8fafc',
+          overflowY: 'auto',
+        }}>
           <Outlet />
         </main>
       </div>

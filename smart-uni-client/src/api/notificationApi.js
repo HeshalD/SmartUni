@@ -4,6 +4,10 @@ export const notificationApi = {
   getAll: (page = 0, size = 20) =>
     api.get('/api/notifications', { params: { page, size } }),
 
+  // Admin: fetch every notification in the system
+  getAllAdmin: (page = 0, size = 20) =>
+    api.get('/api/notifications/all', { params: { page, size } }),
+
   getUnreadCount: () =>
     api.get('/api/notifications/unread-count'),
 
