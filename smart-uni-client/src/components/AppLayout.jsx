@@ -4,12 +4,12 @@ import Sidebar from './Sidebar';
 
 export default function AppLayout() {
   return (
-    <div className="app-shell">
+    <div style={{ display: 'flex', minHeight: '100vh', background: '#f8fafc' }}>
       <Sidebar />
 
-      <div className="app-shell__content">
+      <div style={{ flex: 1, minWidth: 0, display: 'flex', flexDirection: 'column' }}>
         <Navbar />
-        <main className="app-main">
+        <main style={{ flex: 1, padding: '24px', overflowY: 'auto' }}>
           <Outlet />
         </main>
       </div>

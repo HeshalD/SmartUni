@@ -31,14 +31,13 @@ import BookingDetailPage from './pages/bookings/BookingDetails';
 
 //Admin pages
 import AdminBookingsPage from './pages/admin/AdminBookingsPage';
+import AdminTicketsPage from './pages/admin/AdminTicketsPage';
 
-// Placeholder pages (implemented by other team members)
-// import BookingsPage    from './pages/bookings/BookingsPage';
-
+// Tickets pages
 import TicketsPage       from './pages/tickets/TicketsPage';
 import CreateTicketPage  from './pages/tickets/CreateTicketPage';
 import TicketDetailPage  from './pages/tickets/TicketDetailPage';
-// import TicketsPage     from './pages/tickets/TicketsPage';
+
 
 function PlaceholderPage({ name }) {
   return (
@@ -79,8 +78,6 @@ export default function App() {
               <Route path="/bookings"   element={<MyBookingsPage />} />
               <Route path="/bookings/new" element={<CreateBookingPage />} />
               <Route path="/bookings/:id" element={<BookingDetailPage />} />
-
-              <Route path="/tickets"    element={<PlaceholderPage name="Tickets" />} />
             </Route>
             {/* Resource routes */}
             <Route path="/resources"       element={<ResourceList />} />
@@ -99,6 +96,7 @@ export default function App() {
               <Route element={<AdminLayout />}>
                 <Route path="/admin" element={<AdminPage />} />
                 <Route path="/admin/bookings" element={<AdminBookingsPage />} />
+                <Route path="/admin/tickets" element={<AdminTicketsPage />} />
               </Route>
             </Route>
           </Route>

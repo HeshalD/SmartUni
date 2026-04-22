@@ -55,7 +55,7 @@ public class TicketController {
         return ResponseEntity.ok(ticketService.getTicketById(id));
     }
 
-    // GET /api/tickets/reporter/{reporterId} - Get tickets by reporter
+    // GET /api/tickets/reporter/{reporterId} - Get tickets by reporter 
     @GetMapping("/reporter/{reporterId}")
     @PreAuthorize("isAuthenticated()")
     public ResponseEntity<List<TicketResponse>> getTicketsByReporter(
@@ -70,7 +70,7 @@ public class TicketController {
         return ResponseEntity.ok(ticketService.getTicketsByReporter(reporterId));
     }
 
-    // GET /api/tickets/status/{status} - Get tickets by status
+    // GET /api/tickets/status/{status} - Get tickets by status (Admin/technician)
     @GetMapping("/status/{status}")
     @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<List<TicketResponse>> getTicketsByStatus(
@@ -95,7 +95,7 @@ public class TicketController {
         return ResponseEntity.noContent().build();
     }
 
-    // POST /api/tickets/{id}/comments - Add comment
+    // POST /api/tickets/{id}/comments - Add comment (Admin/technician)
     @PostMapping("/{id}/comments")
     @PreAuthorize("isAuthenticated()")
     public ResponseEntity<TicketResponse> addComment(
