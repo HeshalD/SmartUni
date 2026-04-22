@@ -78,7 +78,7 @@ export default function App() {
               <Route path="/bookings"   element={<MyBookingsPage />} />
               <Route path="/bookings/new" element={<CreateBookingPage />} />
               <Route path="/bookings/:id" element={<BookingDetailPage />} />
-            </Route>
+            
             {/* Resource routes */}
             <Route path="/resources"       element={<ResourceList />} />
             <Route path="/resources/:id"   element={<ResourceDetail />} />
@@ -90,6 +90,7 @@ export default function App() {
             <Route path="/tickets"          element={<TicketsPage />} />
             <Route path="/tickets/new"      element={<CreateTicketPage />} />
             <Route path="/tickets/:id"      element={<TicketDetailPage />} />
+            </Route>
 
             {/* Admin-only routes */}
             <Route element={<AdminRoute />}>
