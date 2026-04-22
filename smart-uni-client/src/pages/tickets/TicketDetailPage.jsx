@@ -1,6 +1,7 @@
 import { useEffect, useState } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { useAuth } from '../../context/AuthContext';
+import { FaArrowLeft, FaTrashAlt, FaMapMarkerAlt, FaUser, FaPhone, FaWrench, FaCalendar, FaSync, FaCheckCircle, FaTimesCircle, FaImage, FaCog, FaComments, FaEdit, FaSave, FaTimes } from 'react-icons/fa';
 
 const API = 'http://localhost:8080/api/tickets';
 
@@ -144,18 +145,50 @@ export default function TicketDetailPage() {
     }
   }
 
-  if (loading) return <div className="loading-spinner"><div className="spinner" /></div>;
-  if (error)   return <div className="page-container"><div className="alert alert-error">{error}</div></div>;
+  if (loading)
+    return (
+      <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', height: '50vh' }}>
+        <div style={{ width: '40px', height: '40px', border: '3px solid #e5e7eb', borderTop: '3px solid #4f46e5', borderRadius: '50%', animation: 'spin 1s linear infinite' }} />
+      </div>
+    );
+  if (error)
+    return (
+      <div style={{ padding: '28px', maxWidth: '1200px', margin: '0 auto' }}>
+        <div style={{ marginBottom: '16px', padding: '12px 16px', borderRadius: '10px', background: '#fef2f2', color: '#991b1b', fontSize: '14px', fontWeight: 500, border: '1px solid #fee2e2' }}>
+          {error}
+        </div>
+      </div>
+    );
   if (!ticket) return null;
 
   const canManage = isAdmin || isTechnician;
 
   return (
-    <div className="page-container">
+    <div style={{ padding: '28px', maxWidth: '1200px', margin: '0 auto' }}>
 
       {/* Back button */}
-      <button className="btn btn-outline" style={{ marginBottom: '1rem' }} onClick={() => navigate('/tickets')}>
-        ← Back to Tickets
+      <button
+        style={{
+          display: 'inline-flex',
+          alignItems: 'center',
+          gap: '6px',
+          padding: '8px 16px',
+          borderRadius: '8px',
+          border: '1px solid #e5e7eb',
+          background: '#ffffff',
+          color: '#374151',
+          fontSize: '13px',
+          fontWeight: 600,
+          cursor: 'pointer',
+          marginBottom: '16px',
+          transition: 'background 0.15s',
+        }}
+        onMouseEnter={(e) => { e.currentTarget.style.background = '#f3f4f6'; }}
+        onMouseLeave={(e) => { e.currentTarget.style.background = '#ffffff'; }}
+        onClick={() => navigate('/tickets')}
+      >
+        <FaArrowLeft size={12} />
+        Back to Tickets
       </button>
 
       {/* Ticket Header */}
@@ -197,8 +230,27 @@ export default function TicketDetailPage() {
           </div>
 
           {isAdmin && (
-            <button className="btn btn-outline" style={{ color: '#ef4444', borderColor: '#ef4444' }} onClick={handleDelete}>
-              🗑 Delete Ticket
+            <button
+              style={{
+                display: 'inline-flex',
+                alignItems: 'center',
+                gap: '6px',
+                padding: '8px 16px',
+                borderRadius: '8px',
+                border: '1px solid #ef4444',
+                background: '#ffffff',
+                color: '#ef4444',
+                fontSize: '13px',
+                fontWeight: 600,
+                cursor: 'pointer',
+                transition: 'background 0.15s',
+              }}
+              onMouseEnter={(e) => { e.currentTarget.style.background = '#fef2f2'; }}
+              onMouseLeave={(e) => { e.currentTarget.style.background = '#ffffff'; }}
+              onClick={handleDelete}
+            >
+              <FaTrashAlt size={12} />
+              Delete Ticket
             </button>
           )}
         </div>
@@ -208,14 +260,14 @@ export default function TicketDetailPage() {
         {/* Meta info */}
         <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(200px, 1fr))', gap: '0.75rem', marginTop: '1.25rem' }}>
           {[
-            { label: '📍 Location',    value: ticket.location },
-            { label: '👤 Reporter',    value: ticket.reporterName },
-            { label: '📞 Contact',     value: ticket.contactDetails },
-            { label: '🔧 Technician',  value: ticket.assignedTechnicianName || 'Not assigned' },
-            { label: '📅 Created',     value: new Date(ticket.createdAt).toLocaleDateString() },
-            { label: '🔄 Updated',     value: new Date(ticket.updatedAt).toLocaleDateString() },
-          ].map(({ label, value }) => (
-            <div key={label} style={{ background: '#f9fafb', padding: '0.75rem', borderRadius: '8px' }}>
+            { label: <><FaMapMarkerAlt size={12} /> Location</>, value: ticket.location },
+            { label: <><FaUser size={12} /> Reporter</>, value: ticket.reporterName },
+            { label: <><FaPhone size={12} /> Contact</>, value: ticket.contactDetails },
+            { label: <><FaWrench size={12} /> Technician</>, value: ticket.assignedTechnicianName || 'Not assigned' },
+            { label: <><FaCalendar size={12} /> Created</>, value: new Date(ticket.createdAt).toLocaleDateString() },
+            { label: <><FaSync size={12} /> Updated</>, value: new Date(ticket.updatedAt).toLocaleDateString() },
+          ].map(({ label, value }, index) => (
+            <div key={index} style={{ background: '#f9fafb', padding: '0.75rem', borderRadius: '8px' }}>
               <div style={{ fontSize: '0.75rem', color: '#9ca3af', marginBottom: '0.2rem' }}>{label}</div>
               <div style={{ fontSize: '0.9rem', fontWeight: 500 }}>{value}</div>
             </div>
@@ -225,7 +277,7 @@ export default function TicketDetailPage() {
         {/* Resolution notes */}
         {ticket.resolutionNotes && (
           <div style={{ marginTop: '1rem', background: '#d1fae5', border: '1px solid #6ee7b7', borderRadius: '8px', padding: '0.75rem 1rem' }}>
-            <div style={{ fontSize: '0.8rem', fontWeight: 700, color: '#065f46', marginBottom: '0.25rem' }}>✅ Resolution Notes</div>
+            <div style={{ fontSize: '12px', fontWeight: 700, color: '#065f46', marginBottom: '4px', display: 'flex', alignItems: 'center', gap: '6px' }}><FaCheckCircle size={12} /> Resolution Notes</div>
             <p style={{ color: '#065f46', fontSize: '0.9rem' }}>{ticket.resolutionNotes}</p>
           </div>
         )}
@@ -233,7 +285,7 @@ export default function TicketDetailPage() {
         {/* Rejection reason */}
         {ticket.rejectionReason && (
           <div style={{ marginTop: '1rem', background: '#fee2e2', border: '1px solid #fca5a5', borderRadius: '8px', padding: '0.75rem 1rem' }}>
-            <div style={{ fontSize: '0.8rem', fontWeight: 700, color: '#991b1b', marginBottom: '0.25rem' }}>❌ Rejection Reason</div>
+            <div style={{ fontSize: '12px', fontWeight: 700, color: '#991b1b', marginBottom: '4px', display: 'flex', alignItems: 'center', gap: '6px' }}><FaTimesCircle size={12} /> Rejection Reason</div>
             <p style={{ color: '#991b1b', fontSize: '0.9rem' }}>{ticket.rejectionReason}</p>
           </div>
         )}
@@ -241,7 +293,7 @@ export default function TicketDetailPage() {
         {/* Images */}
         {ticket.imageUrls?.length > 0 && (
           <div style={{ marginTop: '1rem' }}>
-            <div style={{ fontSize: '0.85rem', fontWeight: 600, marginBottom: '0.5rem', color: '#374151' }}>🖼️ Attachments</div>
+            <div style={{ fontSize: '13px', fontWeight: 600, marginBottom: '8px', color: '#374151', display: 'flex', alignItems: 'center', gap: '6px' }}><FaImage size={12} /> Attachments</div>
             <div style={{ display: 'flex', gap: '0.5rem', flexWrap: 'wrap' }}>
               {ticket.imageUrls.map((url, i) => (
                 <a key={i} href={url} target="_blank" rel="noreferrer"
@@ -260,7 +312,7 @@ export default function TicketDetailPage() {
           background: '#fff', border: '1px solid #e5e7eb',
           borderRadius: '12px', padding: '1.5rem', marginBottom: '1.25rem',
         }}>
-          <h2 style={{ fontSize: '1.1rem', fontWeight: 700, marginBottom: '1rem' }}>⚙️ Update Ticket</h2>
+          <h2 style={{ fontSize: '16px', fontWeight: 700, marginBottom: '16px', display: 'flex', alignItems: 'center', gap: '8px' }}><FaCog size={16} /> Update Ticket</h2>
           <form onSubmit={handleUpdate} style={{ display: 'flex', flexDirection: 'column', gap: '1rem' }}>
 
             <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '1rem' }}>
@@ -318,8 +370,8 @@ export default function TicketDetailPage() {
 
       {/* Comments Section */}
       <div style={{ background: '#fff', border: '1px solid #e5e7eb', borderRadius: '12px', padding: '1.5rem' }}>
-        <h2 style={{ fontSize: '1.1rem', fontWeight: 700, marginBottom: '1rem' }}>
-          💬 Comments ({ticket.comments?.length || 0})
+        <h2 style={{ fontSize: '16px', fontWeight: 700, marginBottom: '16px', display: 'flex', alignItems: 'center', gap: '8px' }}>
+          <FaComments size={16} /> Comments ({ticket.comments?.length || 0})
         </h2>
 
         {/* Add comment */}
@@ -356,16 +408,38 @@ export default function TicketDetailPage() {
                     {comment.authorId === user?.id && (
                       <>
                         <button
-                          className="btn-icon"
+                          style={{
+                            padding: '4px 8px',
+                            borderRadius: '4px',
+                            border: 'none',
+                            background: '#f3f4f6',
+                            color: '#6b7280',
+                            cursor: 'pointer',
+                            fontSize: '12px',
+                            transition: 'background 0.15s',
+                          }}
+                          onMouseEnter={(e) => { e.currentTarget.style.background = '#e5e7eb'; }}
+                          onMouseLeave={(e) => { e.currentTarget.style.background = '#f3f4f6'; }}
                           onClick={() => { setEditingComment(comment.id); setEditText(comment.content); }}
                         >
-                          ✏️
+                          <FaEdit size={10} />
                         </button>
                         <button
-                          className="btn-icon btn-icon--danger"
+                          style={{
+                            padding: '4px 8px',
+                            borderRadius: '4px',
+                            border: 'none',
+                            background: '#fef2f2',
+                            color: '#ef4444',
+                            cursor: 'pointer',
+                            fontSize: '12px',
+                            transition: 'background 0.15s',
+                          }}
+                          onMouseEnter={(e) => { e.currentTarget.style.background = '#fee2e2'; }}
+                          onMouseLeave={(e) => { e.currentTarget.style.background = '#fef2f2'; }}
                           onClick={() => handleDeleteComment(comment.id)}
                         >
-                          🗑
+                          <FaTrashAlt size={10} />
                         </button>
                       </>
                     )}
@@ -379,10 +453,46 @@ export default function TicketDetailPage() {
                       onChange={e => setEditText(e.target.value)}
                       style={{ flex: 1, padding: '0.5rem 0.75rem', border: '1px solid #e5e7eb', borderRadius: '6px' }}
                     />
-                    <button className="btn btn-primary" style={{ fontSize: '0.85rem' }} onClick={() => handleEditComment(comment.id)}>
+                    <button
+                      style={{
+                        display: 'inline-flex',
+                        alignItems: 'center',
+                        padding: '6px 12px',
+                        borderRadius: '6px',
+                        background: '#4f46e5',
+                        color: '#fff',
+                        fontSize: '12px',
+                        fontWeight: 600,
+                        border: 'none',
+                        cursor: 'pointer',
+                        transition: 'background 0.15s',
+                      }}
+                      onMouseEnter={(e) => { e.currentTarget.style.background = '#4338ca'; }}
+                      onMouseLeave={(e) => { e.currentTarget.style.background = '#4f46e5'; }}
+                      onClick={() => handleEditComment(comment.id)}
+                    >
+                      <FaSave size={10} style={{ marginRight: '4px' }} />
                       Save
                     </button>
-                    <button className="btn btn-outline" style={{ fontSize: '0.85rem' }} onClick={() => setEditingComment(null)}>
+                    <button
+                      style={{
+                        display: 'inline-flex',
+                        alignItems: 'center',
+                        padding: '6px 12px',
+                        borderRadius: '6px',
+                        border: '1px solid #e5e7eb',
+                        background: '#ffffff',
+                        color: '#374151',
+                        fontSize: '12px',
+                        fontWeight: 600,
+                        cursor: 'pointer',
+                        transition: 'background 0.15s',
+                      }}
+                      onMouseEnter={(e) => { e.currentTarget.style.background = '#f3f4f6'; }}
+                      onMouseLeave={(e) => { e.currentTarget.style.background = '#ffffff'; }}
+                      onClick={() => setEditingComment(null)}
+                    >
+                      <FaTimes size={10} style={{ marginRight: '4px' }} />
                       Cancel
                     </button>
                   </div>

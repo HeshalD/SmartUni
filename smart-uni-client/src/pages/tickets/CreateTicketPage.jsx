@@ -79,7 +79,7 @@ export default function CreateTicketPage() {
     <div className="page-container">
       <div className="page-header">
         <div>
-          <h1 className="page-title">🔧 New Maintenance Ticket</h1>
+          <h1 className="page-title">New Maintenance Ticket</h1>
           <p className="page-subtitle">Report a maintenance issue or incident</p>
         </div>
       </div>

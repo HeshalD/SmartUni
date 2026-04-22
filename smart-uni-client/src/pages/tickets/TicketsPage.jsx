@@ -1,6 +1,7 @@
 import { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
 import { useAuth } from '../../context/AuthContext';
+import { FaTools, FaMapMarkerAlt, FaTags, FaUser, FaArrowRight, FaCheckCircle } from 'react-icons/fa';
 
 const API = 'http://localhost:8080/api/tickets';
 
@@ -62,49 +63,100 @@ export default function TicketsPage() {
     ? tickets.filter((t) => t.status === statusFilter)
     : tickets;
 
-  if (loading) return <div className="loading-spinner"><div className="spinner" /></div>;
+  if (loading)
+    return (
+      <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', height: '50vh' }}>
+        <div style={{ width: '40px', height: '40px', border: '3px solid #e5e7eb', borderTop: '3px solid #4f46e5', borderRadius: '50%', animation: 'spin 1s linear infinite' }} />
+      </div>
+    );
 
   return (
-    <div className="page-container">
+    <div style={{ padding: '28px', maxWidth: '1200px', margin: '0 auto' }}>
       {/* Header */}
-      <div className="page-header">
+      <div style={{ display: 'flex', alignItems: 'flex-start', justifyContent: 'space-between', gap: '16px', flexWrap: 'wrap', marginBottom: '24px' }}>
         <div>
-          <h1 className="page-title">🔧 Maintenance Tickets</h1>
-          <p className="page-subtitle">
+          <h1 style={{ fontSize: '22px', fontWeight: 800, color: '#111827', margin: 0, display: 'flex', alignItems: 'center', gap: '10px' }}>
+            
+            Maintenance Tickets 
+          </h1>
+          <p style={{ fontSize: '14px', color: '#6b7280', margin: '4px 0 0 0' }}>
             {isAdmin ? 'All submitted incident tickets' : 'Your submitted tickets'}
           </p>
         </div>
-        <Link to="/tickets/new" className="btn btn-primary">
+        <Link
+          to="/tickets/new"
+          style={{
+            display: 'inline-flex',
+            alignItems: 'center',
+            gap: '6px',
+            padding: '10px 18px',
+            borderRadius: '10px',
+            background: '#4f46e5',
+            color: '#fff',
+            fontSize: '13px',
+            fontWeight: 600,
+            textDecoration: 'none',
+            transition: 'background 0.15s',
+          }}
+          onMouseEnter={(e) => { e.currentTarget.style.background = '#4338ca'; }}
+          onMouseLeave={(e) => { e.currentTarget.style.background = '#4f46e5'; }}
+        >
           + New Ticket
         </Link>
       </div>
 
       {/* Error */}
-      {error && <div className="alert alert-error">{error}</div>}
+      {error && (
+        <div style={{ marginBottom: '16px', padding: '12px 16px', borderRadius: '10px', background: '#fef2f2', color: '#991b1b', fontSize: '14px', fontWeight: 500, border: '1px solid #fee2e2' }}>
+          {error}
+        </div>
+      )}
 
       {/* Filter */}
-      <div style={{ marginBottom: '1.25rem', display: 'flex', gap: '0.5rem', flexWrap: 'wrap' }}>
-        {['', 'OPEN', 'IN_PROGRESS', 'RESOLVED', 'CLOSED', 'REJECTED'].map((s) => (
-          <button
-            key={s}
-            onClick={() => setStatusFilter(s)}
-            className={`btn ${statusFilter === s ? 'btn-primary' : 'btn-outline'}`}
-            style={{ fontSize: '0.8rem', padding: '0.35rem 0.9rem' }}
-          >
-            {s || 'All'}
-          </button>
-        ))}
+      <div style={{ marginBottom: '20px', display: 'flex', gap: '8px', flexWrap: 'wrap' }}>
+        {['', 'OPEN', 'IN_PROGRESS', 'RESOLVED', 'CLOSED', 'REJECTED'].map((s) => {
+          const active = statusFilter === s;
+          return (
+            <button
+              key={s}
+              onClick={() => setStatusFilter(s)}
+              style={{
+                fontSize: '13px',
+                padding: '6px 14px',
+                borderRadius: '8px',
+                border: active ? 'none' : '1px solid #e5e7eb',
+                background: active ? '#4f46e5' : '#ffffff',
+                color: active ? '#fff' : '#374151',
+                fontWeight: 600,
+                cursor: 'pointer',
+                transition: 'background 0.15s, color 0.15s',
+              }}
+              onMouseEnter={(e) => {
+                if (!active) {
+                  e.currentTarget.style.background = '#f3f4f6';
+                }
+              }}
+              onMouseLeave={(e) => {
+                if (!active) {
+                  e.currentTarget.style.background = '#ffffff';
+                }
+              }}
+            >
+              {s.replace('_', ' ') || 'All'}
+            </button>
+          );
+        })}
       </div>
 
       {/* Ticket list */}
       {filtered.length === 0 ? (
-        <div className="empty-state">
-          <span style={{ fontSize: '2.5rem' }}>🎉</span>
-          <h3>No tickets found</h3>
-          <p>No tickets match the selected filter.</p>
+        <div style={{ textAlign: 'center', padding: '48px 20px', color: '#9ca3af' }}>
+          <FaCheckCircle size={40} color="#d1d5db" style={{ marginBottom: '16px' }} />
+          <h3 style={{ fontSize: '18px', fontWeight: 700, color: '#374151', margin: '0 0 8px 0' }}>No tickets found</h3>
+          <p style={{ fontSize: '14px', color: '#6b7280', margin: 0 }}>No tickets match the selected filter.</p>
         </div>
       ) : (
-        <div style={{ display: 'flex', flexDirection: 'column', gap: '0.75rem' }}>
+        <div style={{ display: 'flex', flexDirection: 'column', gap: '12px' }}>
           {filtered.map((ticket) => (
             <Link
               to={`/tickets/${ticket.id}`}
@@ -117,11 +169,11 @@ export default function TicketsPage() {
                   border: '1px solid #e5e7eb',
                   borderLeft: `4px solid ${statusColor(ticket.status)}`,
                   borderRadius: '10px',
-                  padding: '1rem 1.25rem',
+                  padding: '16px 20px',
                   display: 'flex',
                   justifyContent: 'space-between',
                   alignItems: 'center',
-                  gap: '1rem',
+                  gap: '16px',
                   flexWrap: 'wrap',
                   boxShadow: '0 1px 3px rgba(0,0,0,0.05)',
                   transition: 'box-shadow 0.2s',
@@ -130,24 +182,27 @@ export default function TicketsPage() {
                 onMouseLeave={e => e.currentTarget.style.boxShadow = '0 1px 3px rgba(0,0,0,0.05)'}
               >
                 <div style={{ flex: 1 }}>
-                  <div style={{ fontWeight: 600, fontSize: '1rem', marginBottom: '0.25rem' }}>
+                  <div style={{ fontWeight: 600, fontSize: '16px', marginBottom: '4px' }}>
                     {ticket.title}
                   </div>
-                  <div style={{ fontSize: '0.85rem', color: '#6b7280' }}>
-                    📍 {ticket.location} &nbsp;·&nbsp; 🗂️ {ticket.category}
-                    &nbsp;·&nbsp; 👤 {ticket.reporterName}
+                  <div style={{ fontSize: '14px', color: '#6b7280', display: 'flex', alignItems: 'center', gap: '6px', flexWrap: 'wrap' }}>
+                    <FaMapMarkerAlt size={12} /> {ticket.location}
+                    <span style={{ color: '#d1d5db' }}>·</span>
+                    <FaTags size={12} /> {ticket.category}
+                    <span style={{ color: '#d1d5db' }}>·</span>
+                    <FaUser size={12} /> {ticket.reporterName}
                   </div>
                 </div>
 
-                <div style={{ display: 'flex', gap: '0.5rem', alignItems: 'center', flexWrap: 'wrap' }}>
+                <div style={{ display: 'flex', gap: '8px', alignItems: 'center', flexWrap: 'wrap' }}>
                   {/* Priority badge */}
                   <span style={{
                     background: priorityColor(ticket.priority) + '22',
                     color: priorityColor(ticket.priority),
-                    fontSize: '0.75rem',
+                    fontSize: '12px',
                     fontWeight: 700,
-                    padding: '0.2rem 0.6rem',
-                    borderRadius: '999px',
+                    padding: '3px 10px',
+                    borderRadius: '5px',
                   }}>
                     {ticket.priority}
                   </span>
@@ -156,15 +211,15 @@ export default function TicketsPage() {
                   <span style={{
                     background: statusColor(ticket.status) + '22',
                     color: statusColor(ticket.status),
-                    fontSize: '0.75rem',
+                    fontSize: '12px',
                     fontWeight: 700,
-                    padding: '0.2rem 0.6rem',
-                    borderRadius: '999px',
+                    padding: '3px 10px',
+                    borderRadius: '5px',
                   }}>
                     {ticket.status.replace('_', ' ')}
                   </span>
 
-                  <span style={{ color: '#9ca3af', fontSize: '0.8rem' }}>→</span>
+                  <FaArrowRight size={14} color="#9ca3af" />
                 </div>
               </div>
             </Link>
