@@ -9,9 +9,7 @@ public class AddCommentRequest {
     @NotBlank(message = "Comment content is required")
     private String content;
 
-    @NotBlank(message = "Author ID is required")
     private String authorId;
 
-    @NotBlank(message = "Author name is required")
     private String authorName;
 }

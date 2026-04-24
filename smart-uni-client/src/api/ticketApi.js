@@ -3,10 +3,11 @@ import api from './axiosInstance';
 export const ticketsApi = {
   // Get all tickets (admin only)
   getAllTickets: (status = null) => {
-    const params = {};
-    if (status && status !== 'ALL') params.status = status;
-    return api.get('/api/tickets', { params });
-  },
+  if (status && status !== 'ALL') {
+    return api.get(`/api/tickets/status/${status}`);
+  }
+  return api.get('/api/tickets');
+},
 
   // Get ticket by ID
   getTicketById: (id) => api.get(`/api/tickets/${id}`),

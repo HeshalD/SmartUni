@@ -10,7 +10,7 @@ import {
   FaTicketAlt
 } from 'react-icons/fa';
 
-const STATUS_OPTIONS = ["ALL", "OPEN", "IN_PROGRESS", "RESOLVED", "CLOSED"];
+const STATUS_OPTIONS = ["ALL", "OPEN", "IN_PROGRESS", "RESOLVED", "CLOSED", "REJECTED"];
 
 const STATUS_STYLES = {
   OPEN: { background: "#fef3c7", color: "#92400e" },
@@ -36,6 +36,7 @@ export default function AdminTicketsPage() {
   const [showUpdateModal, setShowUpdateModal] = useState(false);
   const [comment, setComment] = useState("");
   const [updateStatus, setUpdateStatus] = useState("");
+  const [technicianName, setTechnicianName] = useState("");  
   const [isSubmitting, setIsSubmitting] = useState(false);
 
   useEffect(() => {
@@ -63,11 +64,15 @@ export default function AdminTicketsPage() {
     
     try {
       setIsSubmitting(true);
-      await ticketsApi.updateTicket(selectedTicket.id, { status: updateStatus });
+      await ticketsApi.updateTicket(selectedTicket.id, { 
+          status: updateStatus,
+          assignedTechnicianName: technicianName 
+  });
       await fetchTickets();
       setShowUpdateModal(false);
       setSelectedTicket(null);
       setUpdateStatus("");
+      setTechnicianName("");
     } catch (err) {
       setError("Failed to update ticket");
       console.error("Error updating ticket:", err);
@@ -489,6 +494,7 @@ export default function AdminTicketsPage() {
               setShowUpdateModal(false);
               setSelectedTicket(null);
               setUpdateStatus("");
+              setTechnicianName("");
             }}
             style={{
               position: 'fixed',
@@ -552,7 +558,26 @@ export default function AdminTicketsPage() {
                 <option value="IN_PROGRESS">In Progress</option>
                 <option value="RESOLVED">Resolved</option>
                 <option value="CLOSED">Closed</option>
+                <option value="REJECTED">Rejected</option>
               </select>
+            </div>
+
+            <div style={{ marginBottom: '12px' }}>
+             <label style={{ display: 'block', fontSize: '13px', fontWeight: '500', color: '#374151', marginBottom: '6px' }}>
+                 Assign Technician
+             </label>
+             <input
+               value={technicianName}
+               onChange={(e) => setTechnicianName(e.target.value)}
+               placeholder="Enter technician name"
+               style={{
+                 width: '100%',
+                 padding: '8px',
+                 border: '1px solid #d1d5db',
+                 borderRadius: '6px',
+                 fontSize: '13px',
+                 outline: 'none',}}
+              />
             </div>
 
             <div style={{ display: 'flex', justifyContent: 'flex-end', gap: '8px' }}>
